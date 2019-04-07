@@ -1,0 +1,13 @@
+schema {
+    query: Query
+}
+
+type Query {
+    getResume(): Resume
+}
+
+type Resume {
+    id: ID!
+    name: String!
+    percentage: Float!
+}

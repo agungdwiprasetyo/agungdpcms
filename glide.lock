@@ -1,0 +1,25 @@
+hash: 1bc5cfa224b52b3b9bd9781a6e8aea3695bcaa19203440d67605934e6c321a14
+updated: 2019-04-06T21:05:28.180068+07:00
+imports:
+- name: github.com/graph-gophers/graphql-go
+  version: 3e8838d4614c12ab337e796548521744f921e05d
+  subpackages:
+  - errors
+  - internal/common
+  - internal/exec
+  - internal/exec/packer
+  - internal/exec/resolvable
+  - internal/exec/selected
+  - internal/query
+  - internal/schema
+  - internal/validation
+  - introspection
+  - log
+  - relay
+  - trace
+- name: github.com/opentracing/opentracing-go
+  version: 659c90643e714681897ec2521c60567dd21da733
+  subpackages:
+  - ext
+  - log
+testImports: []
