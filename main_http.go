@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/agungdwiprasetyo/agungdpcms/schema"
 	"github.com/graph-gophers/graphql-go"
@@ -15,7 +17,7 @@ func (s *service) ServeHTTP() {
 
 	mux := http.NewServeMux()
 
-	mux.Handle("/", http.FileServer(http.Dir("./static")))
+	mux.Handle("/", http.FileServer(http.Dir(fmt.Sprintf("%s/static", os.Getenv("APP_PATH")))))
 	mux.Handle("/graphiql", &relay.Handler{Schema: schema}) // open host in browser for tool for writing, validating, and testing GraphQL queries.
 	mux.Handle("/graphql", &customHandler{schema: schema})
 
