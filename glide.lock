@@ -1,6 +1,14 @@
-hash: 1bc5cfa224b52b3b9bd9781a6e8aea3695bcaa19203440d67605934e6c321a14
-updated: 2019-04-06T21:05:28.180068+07:00
+hash: 3eaa8b7700c2eca76c26d9436f94c69377eb7c375bc951fccd6fc2d593e4f025
+updated: 2019-04-12T09:36:31.077221+07:00
 imports:
+- name: github.com/agungdwiprasetyo/go-utils
+  version: 9c7293a6a4f70d7b31c164265780d8ade79c64c7
+  subpackages:
+  - debug
+- name: github.com/go-sql-driver/mysql
+  version: 72cd26f257d44c1114970e19afddcd812016007e
+- name: github.com/gorilla/websocket
+  version: 66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d
 - name: github.com/graph-gophers/graphql-go
   version: 3e8838d4614c12ab337e796548521744f921e05d
   subpackages:
@@ -17,9 +25,21 @@ imports:
   - log
   - relay
   - trace
+- name: github.com/jinzhu/gorm
+  version: 472c70caa40267cb89fd8facb07fe6454b578626
+  subpackages:
+  - dialects/mysql
+- name: github.com/jinzhu/inflection
+  version: 04140366298a54a039076d798123ffa108fff46c
+- name: github.com/joho/godotenv
+  version: 23d116af351c84513e1946b527c88823e476be13
 - name: github.com/opentracing/opentracing-go
   version: 659c90643e714681897ec2521c60567dd21da733
   subpackages:
   - ext
   - log
+- name: google.golang.org/appengine
+  version: 54a98f90d1c46b7731eb8fb305d2a321c30ef610
+  subpackages:
+  - cloudsql
 testImports: []
