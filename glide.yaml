@@ -12,3 +12,4 @@ import:
   version: ~1.4.1
 - package: github.com/gorilla/websocket
   version: ~1.4.0
+- package: github.com/agungdwiprasetyo/go-utils

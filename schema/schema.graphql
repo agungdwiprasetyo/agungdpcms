@@ -1,13 +1,42 @@
 schema {
     query: Query
+    mutation: Mutation
 }
 
 type Query {
-    getResume(): Resume
+    getAllResume(): Resumes
+    getResumeBySlug(slug: String!): Resume
+}
+
+type Mutation {
+    createResume(resume: ResumeInput!): Resume
 }
 
 type Resume {
     id: ID!
+    slug: String!
     name: String!
-    percentage: Float!
+    achievements: [Achievement]!
+}
+
+type Resumes {
+    data: [Resume]!
+}
+
+input ResumeInput {
+    slug: String!
+    name: String!
+}
+
+type Achievement {
+    id: ID!
+    resume_id: ID!
+    name: String!
+    appreciator: String!
+    year: Int!
+    picture: String!
+}
+
+type Achievements {
+    data: [Achievement]!
 }
