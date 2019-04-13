@@ -4,11 +4,18 @@ schema {
 }
 
 type Query {
-    getAllResume(): Resumes
-    getResumeBySlug(slug: String!): Resume
+    chat: ChatModule
+    resume: ResumeModule
 }
 
 type Mutation {
+    chat: ChatModule
+}
+
+################### Resume Module Area
+type ResumeModule {
+    getAllResume(): Resumes
+    getResumeBySlug(slug: String!): Resume
     createResume(resume: ResumeInput!): Resume
 }
 
@@ -39,4 +46,25 @@ type Achievement {
 
 type Achievements {
     data: [Achievement]!
+}
+################### End of Resume Module Area
+
+
+################### Chat Module Area
+type ChatModule {
+    getAllMessage(groupId: Int!): ChatMessages
+}
+type ChatGroup {
+    id: Int!
+    name: String!
+}
+type ChatMessage {
+    id: Int!
+    clientId: String!
+    event: String!
+    title: String!
+    content: String!
+}
+type ChatMessages {
+    data: [ChatMessage]!
 }

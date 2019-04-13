@@ -9,19 +9,19 @@ import (
 	"github.com/agungdwiprasetyo/go-utils/debug"
 )
 
-// Handler websocket chat service
-type Handler struct {
+// WsHandler websocket chat service
+type WsHandler struct {
 	server *chat.Server
 	uc     usecase.Chat
 }
 
 // NewWebsocketHandler constructor
-func NewWebsocketHandler(s *chat.Server) *Handler {
-	return &Handler{server: s, uc: usecase.New()}
+func NewWebsocketHandler(s *chat.Server, uc usecase.Chat) *WsHandler {
+	return &WsHandler{server: s, uc: uc}
 }
 
 // Socket handler
-func (h *Handler) Socket(res http.ResponseWriter, req *http.Request) {
+func (h *WsHandler) Socket(res http.ResponseWriter, req *http.Request) {
 	sock, err := h.server.Upgrader.Upgrade(res, req, nil)
 	if err != nil {
 		log.Println(err)
@@ -29,7 +29,7 @@ func (h *Handler) Socket(res http.ResponseWriter, req *http.Request) {
 	}
 
 	id := req.Header.Get("Sec-Websocket-Key")
-	roomID := req.URL.Query().Get("roomId")
+	groupID := req.URL.Query().Get("groupId")
 	debug.Println(req.URL.Query().Get("token"))
 
 	var client chat.Client
@@ -39,5 +39,9 @@ func (h *Handler) Socket(res http.ResponseWriter, req *http.Request) {
 	client.Server = h.server
 	h.server.Connect <- &client
 
-	h.uc.Join(roomID, &client)
+	err = h.uc.Join(groupID, &client)
+	if err != nil {
+		debug.Println(err)
+		h.server.Disconnect <- &client
+	}
 }
