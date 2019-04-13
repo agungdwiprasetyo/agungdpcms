@@ -1,5 +1,5 @@
-hash: 6f129a637facefece4b49f5b539223a051727f940100043e275b5bb99a58df05
-updated: 2019-04-13T16:27:18.40895+07:00
+hash: 7226a2caff70de324b087daccfe8f94cc101c17953aa36fe35433c08fd123a41
+updated: 2019-04-13T21:57:39.268132+07:00
 imports:
 - name: github.com/agungdwiprasetyo/go-utils
   version: 9c7293a6a4f70d7b31c164265780d8ade79c64c7
@@ -29,10 +29,16 @@ imports:
   version: 472c70caa40267cb89fd8facb07fe6454b578626
   subpackages:
   - dialects/mysql
+  - dialects/postgres
 - name: github.com/jinzhu/inflection
   version: 04140366298a54a039076d798123ffa108fff46c
 - name: github.com/joho/godotenv
   version: 23d116af351c84513e1946b527c88823e476be13
+- name: github.com/lib/pq
+  version: 4ded0e9383f75c197b3a2aaa6d590ac52df6fd79
+  subpackages:
+  - hstore
+  - oid
 - name: github.com/opentracing/opentracing-go
   version: 659c90643e714681897ec2521c60567dd21da733
   subpackages:
