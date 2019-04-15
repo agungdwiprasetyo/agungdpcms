@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
-	"github.com/agungdwiprasetyo/agungdpcms/src/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/shared"
 )
 
 // Resume usecase abstraction

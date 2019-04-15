@@ -3,23 +3,33 @@ package delivery
 import (
 	"context"
 
+	"github.com/agungdwiprasetyo/agungdpcms/middleware"
+	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/serializer"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/usecase"
+	"github.com/agungdwiprasetyo/go-utils/debug"
 )
 
-type GetAllMessageArgs struct {
-	GroupID int32
-}
-
+// GraphqlHandler model
 type GraphqlHandler struct {
-	uc usecase.Chat
+	uc   usecase.Chat
+	midd middleware.Middleware
 }
 
-func NewGraphqlHandler(uc usecase.Chat) *GraphqlHandler {
-	return &GraphqlHandler{uc}
+// NewGraphqlHandler constructor
+func NewGraphqlHandler(uc usecase.Chat, midd middleware.Middleware) *GraphqlHandler {
+	return &GraphqlHandler{
+		uc:   uc,
+		midd: midd,
+	}
 }
 
+// GetAllMessage graphql handler
 func (h *GraphqlHandler) GetAllMessage(ctx context.Context, args *GetAllMessageArgs) (*serializer.MessageListSchema, error) {
+	ctx = h.midd.WithAuth(ctx)
+	userData := shared.ParseUserData(ctx)
+	debug.PrintJSON(userData)
+
 	res := h.uc.FindAllMessagesByGroupID(args.GroupID)
 	if res.Error != nil {
 		return nil, res.Error

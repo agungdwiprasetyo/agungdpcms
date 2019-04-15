@@ -2,13 +2,11 @@ package delivery
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/agungdwiprasetyo/agungdpcms/middleware"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/serializer"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/usecase"
-	"github.com/agungdwiprasetyo/agungdpcms/src/shared"
 	"github.com/agungdwiprasetyo/go-utils/debug"
 )
 
@@ -25,8 +23,7 @@ func New(uc usecase.Resume, midd middleware.Middleware) *ResumeHandler {
 
 // GetAllResume handler
 func (h *ResumeHandler) GetAllResume(ctx context.Context) (*serializer.ResumeListSchema, error) {
-	headers := shared.ParseHeaderFromContext(ctx)
-	fmt.Println(headers.Get("Authorization"))
+	h.midd.WithAuth(ctx)
 
 	result := h.uc.FindAll()
 	if result.Error != nil {

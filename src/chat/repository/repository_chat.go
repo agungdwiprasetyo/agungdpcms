@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/domain"
-	"github.com/agungdwiprasetyo/agungdpcms/src/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/jinzhu/gorm"
 )
 

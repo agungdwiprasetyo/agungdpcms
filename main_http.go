@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/agungdwiprasetyo/agungdpcms/schema"
-	"github.com/agungdwiprasetyo/agungdpcms/src/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
 )

@@ -11,7 +11,7 @@ import (
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/repository"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/serializer"
-	"github.com/agungdwiprasetyo/agungdpcms/src/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/gorilla/websocket"
 )
 
@@ -25,7 +25,6 @@ func New(conf *config.Config) Chat {
 }
 
 func (uc *chatImpl) Join(roomID string, client *chat.Client) error {
-	// TODO: add client join to roomId in database (repository)
 	groupID, _ := strconv.Atoi(roomID)
 	res := uc.repo.FindGroupByID(groupID)
 	if res.Error != nil {

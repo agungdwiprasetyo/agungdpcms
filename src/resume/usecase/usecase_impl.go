@@ -5,7 +5,7 @@ import (
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	rr "github.com/agungdwiprasetyo/agungdpcms/src/resume/repository"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/serializer"
-	"github.com/agungdwiprasetyo/agungdpcms/src/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/shared"
 )
 
 type resumeUc struct {
