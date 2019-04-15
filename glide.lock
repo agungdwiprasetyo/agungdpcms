@@ -1,10 +1,12 @@
-hash: 7226a2caff70de324b087daccfe8f94cc101c17953aa36fe35433c08fd123a41
-updated: 2019-04-13T21:57:39.268132+07:00
+hash: 21359abd0db3bd35d5025cdd7a4636a5fe0c6750e52f58cc8924766f8d38fdc2
+updated: 2019-04-15T11:24:38.192533+07:00
 imports:
 - name: github.com/agungdwiprasetyo/go-utils
   version: 9c7293a6a4f70d7b31c164265780d8ade79c64c7
   subpackages:
   - debug
+- name: github.com/dgrijalva/jwt-go
+  version: 06ea1031745cb8b3dab3f6a236daf2b0aa468b7e
 - name: github.com/go-sql-driver/mysql
   version: 72cd26f257d44c1114970e19afddcd812016007e
 - name: github.com/gorilla/websocket
@@ -26,9 +28,8 @@ imports:
   - relay
   - trace
 - name: github.com/jinzhu/gorm
-  version: 472c70caa40267cb89fd8facb07fe6454b578626
+  version: e3987fd4b803c16497aa4dfd2e75db7a6a061a4e
   subpackages:
-  - dialects/mysql
   - dialects/postgres
 - name: github.com/jinzhu/inflection
   version: 04140366298a54a039076d798123ffa108fff46c
@@ -44,8 +45,4 @@ imports:
   subpackages:
   - ext
   - log
-- name: google.golang.org/appengine
-  version: 54a98f90d1c46b7731eb8fb305d2a321c30ef610
-  subpackages:
-  - cloudsql
 testImports: []

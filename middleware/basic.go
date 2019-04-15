@@ -7,7 +7,7 @@ import (
 
 	"github.com/agungdwiprasetyo/agungdpcms/config"
 	"github.com/agungdwiprasetyo/agungdpcms/helper"
-	"github.com/agungdwiprasetyo/agungdpcms/src/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/go-utils/debug"
 )
 
@@ -15,11 +15,12 @@ type basic struct {
 	username, password string
 }
 
+// NewBasicAuth construct new basic auth middleware
 func NewBasicAuth(conf *config.Config) Middleware {
 	return &basic{username: conf.Env.Username, password: conf.Env.Password}
 }
 
-func (b *basic) WithAuth(ctx context.Context) {
+func (b *basic) WithAuth(ctx context.Context) context.Context {
 	headers := shared.ParseHeaderFromContext(ctx)
 	authorizations := strings.Split(headers.Get("Authorization"), " ")
 	if len(authorizations) != 2 {
@@ -44,4 +45,6 @@ func (b *basic) WithAuth(ctx context.Context) {
 	}
 
 	debug.Println(username, password)
+
+	return ctx
 }

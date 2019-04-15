@@ -1,17 +1,23 @@
 package config
 
 import (
+	"crypto/rsa"
 	"log"
 	"os"
 	"strconv"
 
 	"github.com/agungdwiprasetyo/agungdpcms/config/database"
+	"github.com/agungdwiprasetyo/agungdpcms/config/key"
 	"github.com/jinzhu/gorm"
 )
 
 // Config abstraction
 type Config struct {
-	DB  *gorm.DB
+	DB *gorm.DB
+
+	PrivateKey *rsa.PrivateKey
+	PublicKey  *rsa.PublicKey
+
 	Env struct {
 		HTTPPort int
 		Username string
@@ -25,6 +31,9 @@ func Init() *Config {
 
 	conf := new(Config)
 	conf.DB = database.LoadDatabaseConnection()
+
+	conf.PrivateKey = key.LoadPrivateKey()
+	conf.PublicKey = key.LoadPublicKey()
 
 	conf.Env.HTTPPort, err = strconv.Atoi(os.Getenv("HTTP_PORT"))
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 
 	cd "github.com/agungdwiprasetyo/agungdpcms/src/chat/domain"
 	rd "github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
+	ud "github.com/agungdwiprasetyo/agungdpcms/src/user/domain"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -31,13 +32,9 @@ func LoadDatabaseConnection() *gorm.DB {
 
 	db.LogMode(true)
 
-	db.AutoMigrate(&rd.Resume{})
-	db.AutoMigrate(&rd.Achievement{})
-	db.AutoMigrate(&rd.Education{})
-	db.AutoMigrate(&rd.Experience{})
-	db.AutoMigrate(&rd.Skill{})
-	db.AutoMigrate(&cd.Group{})
-	db.AutoMigrate(&cd.Message{})
+	db.AutoMigrate(&rd.Resume{}, &rd.Achievement{}, &rd.Education{}, &rd.Experience{}, &rd.Skill{})
+	db.AutoMigrate(&cd.Group{}, &cd.Message{})
+	db.AutoMigrate(&ud.User{}, &ud.Role{})
 
 	log.Println("Success connect to database")
 

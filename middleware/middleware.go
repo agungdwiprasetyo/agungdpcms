@@ -6,5 +6,5 @@ import (
 
 // Middleware abstraction
 type Middleware interface {
-	WithAuth(ctx context.Context)
+	WithAuth(ctx context.Context) context.Context
 }
