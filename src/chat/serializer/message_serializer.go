@@ -1,6 +1,9 @@
 package serializer
 
-import "github.com/agungdwiprasetyo/agungdpcms/src/chat/domain"
+import (
+	"github.com/agungdwiprasetyo/agungdpcms/shared/meta"
+	"github.com/agungdwiprasetyo/agungdpcms/src/chat/domain"
+)
 
 type MessageSchema struct {
 	Message *domain.Message
@@ -31,7 +34,12 @@ func (r *MessageSchema) Content() string {
 }
 
 type MessageListSchema struct {
+	M    *meta.MetaSchema
 	Data []*MessageSchema
+}
+
+func (r *MessageListSchema) Meta() *meta.MetaSchema {
+	return r.M
 }
 
 // Messages method

@@ -19,6 +19,14 @@ type customHandler struct {
 }
 
 func (h *customHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// handle cors
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	if r.Method == http.MethodOptions {
+		return
+	}
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

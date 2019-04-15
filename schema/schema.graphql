@@ -13,6 +13,13 @@ type Mutation {
     chat: ChatModule
 }
 
+type Meta {
+    page: Int!
+    limit: Int!
+    totalRecords: Int!
+    totalPages: Int!
+}
+
 ################### Resume Module Area
 type ResumeModule {
     getAllResume(): Resumes
@@ -28,6 +35,7 @@ type Resume {
 }
 
 type Resumes {
+    meta: Meta!
     data: [Resume]!
 }
 
@@ -67,6 +75,7 @@ type ChatMessage {
     content: String!
 }
 type ChatMessages {
+    meta: Meta!
     data: [ChatMessage]!
 }
 

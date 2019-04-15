@@ -1,6 +1,7 @@
 package serializer
 
 import (
+	"github.com/agungdwiprasetyo/agungdpcms/shared/meta"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	graphql "github.com/graph-gophers/graphql-go"
 )
@@ -27,7 +28,12 @@ func (r *ResumeSchema) Achievements() []*AchievementSchema {
 }
 
 type ResumeListSchema struct {
+	M    *meta.MetaSchema
 	Data []*ResumeSchema
+}
+
+func (r *ResumeListSchema) Meta() *meta.MetaSchema {
+	return r.M
 }
 
 // Resumes method
