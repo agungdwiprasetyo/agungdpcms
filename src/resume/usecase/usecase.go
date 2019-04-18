@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 )
 
 // Resume usecase abstraction

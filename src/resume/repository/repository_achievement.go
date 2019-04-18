@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/jinzhu/gorm"
 )
 
@@ -23,4 +23,13 @@ func (r *achievementRepo) FindByResumeID(resumeID int) *shared.Result {
 	}
 
 	return &shared.Result{Data: achievements}
+}
+
+func (r *achievementRepo) Save(data *domain.Achievement) shared.Result {
+	var ach domain.Achievement
+	if err := r.db.Where(domain.Achievement{Name: data.Name}).Assign(data).FirstOrCreate(&ach).Error; err != nil {
+		return shared.Result{Error: err}
+	}
+
+	return shared.Result{Data: &ach}
 }

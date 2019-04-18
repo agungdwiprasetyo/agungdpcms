@@ -11,6 +11,7 @@ type Query {
 
 type Mutation {
     chat: ChatModule
+    resume: ResumeModule
 }
 
 type Meta {
@@ -42,11 +43,19 @@ type Resumes {
 input ResumeInput {
     slug: String!
     name: String!
+    achievements: [AchievementInput]!
 }
 
 type Achievement {
-    id: ID!
-    resume_id: ID!
+    id: Int!
+    resume_id: Int!
+    name: String!
+    appreciator: String!
+    year: Int!
+    picture: String!
+}
+
+input AchievementInput {
     name: String!
     appreciator: String!
     year: Int!
@@ -61,7 +70,7 @@ type Achievements {
 
 ################### Chat Module Area
 type ChatModule {
-    getAllMessage(groupId: Int!): ChatMessages
+    getAllMessage(groupId: Int!, page: Int!, limit: Int!): ChatMessages
 }
 type ChatGroup {
     id: Int!

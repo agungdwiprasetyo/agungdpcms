@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/jinzhu/gorm"
 )
 
@@ -36,9 +36,10 @@ func (r *resumeRepo) FindBySlug(slug string) *shared.Result {
 }
 
 func (r *resumeRepo) Save(data *domain.Resume) *shared.Result {
-	if err := r.db.Save(&data).Error; err != nil {
+	var resume domain.Resume
+	if err := r.db.Where(domain.Resume{Slug: data.Slug}).Assign(data).FirstOrCreate(&resume).Error; err != nil {
 		return &shared.Result{Error: err}
 	}
 
-	return &shared.Result{Data: data}
+	return &shared.Result{Data: &resume}
 }

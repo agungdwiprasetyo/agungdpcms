@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 )
 
 // Resume abstraction
@@ -15,4 +15,5 @@ type Resume interface {
 // Achievement abstraction
 type Achievement interface {
 	FindByResumeID(resumeID int) *shared.Result
+	Save(data *domain.Achievement) shared.Result
 }

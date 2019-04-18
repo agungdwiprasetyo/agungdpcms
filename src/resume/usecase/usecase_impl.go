@@ -2,10 +2,11 @@ package usecase
 
 import (
 	"github.com/agungdwiprasetyo/agungdpcms/config"
+	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	rr "github.com/agungdwiprasetyo/agungdpcms/src/resume/repository"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/serializer"
-	"github.com/agungdwiprasetyo/agungdpcms/shared"
+	"github.com/agungdwiprasetyo/go-utils/debug"
 )
 
 type resumeUc struct {
@@ -60,5 +61,10 @@ func (uc *resumeUc) FindBySlug(slug string) *shared.Result {
 }
 
 func (uc *resumeUc) Save(data *domain.Resume) *shared.Result {
-	return uc.resumeRepo.Save(data)
+	debug.PrintJSON(data)
+	res := uc.resumeRepo.Save(data)
+	if res.Error != nil {
+		debug.Println(res.Error)
+	}
+	return res
 }
