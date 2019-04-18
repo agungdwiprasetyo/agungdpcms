@@ -2,16 +2,18 @@ package usecase
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"strconv"
 	"time"
 
 	"github.com/agungdwiprasetyo/agungdpcms/config"
+	"github.com/agungdwiprasetyo/agungdpcms/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/shared/meta"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/repository"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/serializer"
-	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/gorilla/websocket"
 )
 
@@ -87,8 +89,12 @@ func (uc *chatImpl) Join(roomID string, client *chat.Client) error {
 	return nil
 }
 
-func (uc *chatImpl) FindAllMessagesByGroupID(groupID int32) (res shared.Result) {
-	res = uc.repo.FindAllMessageByGroupID(int(groupID))
+func (uc *chatImpl) FindAllMessagesByGroupID(args *domain.GetAllMessageArgs) (res shared.Result) {
+	mt := &meta.Meta{Page: int(args.Page), Limit: int(args.Limit)}
+	mt.CalculateOffset()
+	fmt.Printf("%+v\n", mt)
+
+	res = uc.repo.FindAllMessage(int(args.GroupID), mt.Offset, mt.Limit)
 	if res.Error != nil {
 		return
 	}
@@ -98,6 +104,13 @@ func (uc *chatImpl) FindAllMessagesByGroupID(groupID int32) (res shared.Result) 
 	for _, m := range messages {
 		data.Data = append(data.Data, &serializer.MessageSchema{Message: m})
 	}
+	data.M = &meta.MetaSchema{Meta: mt}
+
+	res = uc.repo.CountByGroupID(int(args.GroupID))
+	if res.Error != nil {
+		return
+	}
+	mt.TotalRecords = res.Data.(int)
 
 	res.Data = data
 	return res

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	cd "github.com/agungdwiprasetyo/agungdpcms/src/chat/domain"
 	rd "github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
@@ -30,7 +31,8 @@ func LoadDatabaseConnection() *gorm.DB {
 		panic(err)
 	}
 
-	db.LogMode(true)
+	isDebugMode, _ := strconv.ParseBool(os.Getenv("DEBUG_MODE"))
+	db.LogMode(isDebugMode)
 
 	db.AutoMigrate(&rd.Resume{}, &rd.Achievement{}, &rd.Education{}, &rd.Experience{}, &rd.Skill{})
 	db.AutoMigrate(&cd.Group{}, &cd.Message{})

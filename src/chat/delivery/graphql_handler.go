@@ -5,6 +5,7 @@ import (
 
 	"github.com/agungdwiprasetyo/agungdpcms/middleware"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/src/chat/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/serializer"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/usecase"
 	"github.com/agungdwiprasetyo/go-utils/debug"
@@ -25,12 +26,12 @@ func NewGraphqlHandler(uc usecase.Chat, midd middleware.Middleware) *GraphqlHand
 }
 
 // GetAllMessage graphql handler
-func (h *GraphqlHandler) GetAllMessage(ctx context.Context, args *GetAllMessageArgs) (*serializer.MessageListSchema, error) {
+func (h *GraphqlHandler) GetAllMessage(ctx context.Context, args *domain.GetAllMessageArgs) (*serializer.MessageListSchema, error) {
 	ctx = h.midd.WithAuth(ctx)
 	userData := shared.ParseUserData(ctx)
 	debug.PrintJSON(userData)
 
-	res := h.uc.FindAllMessagesByGroupID(args.GroupID)
+	res := h.uc.FindAllMessagesByGroupID(args)
 	if res.Error != nil {
 		return nil, res.Error
 	}
