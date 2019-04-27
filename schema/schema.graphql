@@ -33,13 +33,12 @@ type Resume {
     slug: String!
     name: String!
     achievements: [Achievement]!
+    experiences: [Experience]!
 }
-
 type Resumes {
     meta: Meta!
     data: [Resume]!
 }
-
 input ResumeInput {
     slug: String!
     name: String!
@@ -54,16 +53,34 @@ type Achievement {
     year: Int!
     picture: String!
 }
-
 input AchievementInput {
     name: String!
     appreciator: String!
     year: Int!
     picture: String!
 }
-
 type Achievements {
     data: [Achievement]!
+}
+
+type Experience {
+    id: Int!
+    resumeId: Int!
+    title: String!
+    company: String!
+    location: String!
+    startDate: String!
+    endDate: String!
+}
+input ExperienceInput {
+    title: String!
+    company: String!
+    location: String!
+    startDate: String!
+    endDate: String!
+}
+type Experiences {
+    data: [Experience]!
 }
 ################### End of Resume Module Area
 
