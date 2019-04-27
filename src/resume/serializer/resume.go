@@ -9,6 +9,7 @@ import (
 type ResumeSchema struct {
 	Resume          *domain.Resume
 	AchievementList []*AchievementSchema
+	ExperienceList  []*ExperienceSchema
 }
 
 func (r *ResumeSchema) ID() graphql.ID {
@@ -25,6 +26,10 @@ func (r *ResumeSchema) Name() string {
 
 func (r *ResumeSchema) Achievements() []*AchievementSchema {
 	return r.AchievementList
+}
+
+func (r *ResumeSchema) Experiences() []*ExperienceSchema {
+	return r.ExperienceList
 }
 
 type ResumeListSchema struct {

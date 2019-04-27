@@ -8,6 +8,6 @@ import (
 // Resume usecase abstraction
 type Resume interface {
 	FindAll() *shared.Result
-	FindBySlug(slug string) *shared.Result
+	FindBySlug(slug string) shared.Result
 	Save(*domain.Resume) *shared.Result
 }
