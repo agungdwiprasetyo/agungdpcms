@@ -15,14 +15,16 @@ func NewAchievementRepository(db *gorm.DB) Achievement {
 	return &achievementRepo{db}
 }
 
-func (r *achievementRepo) FindByResumeID(resumeID int) *shared.Result {
+func (r *achievementRepo) FindByResumeID(resumeID int) (res shared.Result) {
 	var achievements []*domain.Achievement
 
 	if err := r.db.Where(`resume_id = ?`, resumeID).Find(&achievements).Error; err != nil {
-		return &shared.Result{Error: err}
+		res.Error = err
+		return
 	}
 
-	return &shared.Result{Data: achievements}
+	res.Data = achievements
+	return
 }
 
 func (r *achievementRepo) Save(data *domain.Achievement) shared.Result {

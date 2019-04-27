@@ -25,14 +25,14 @@ func (r *resumeRepo) FindAll() *shared.Result {
 	return &shared.Result{Data: resumes}
 }
 
-func (r *resumeRepo) FindBySlug(slug string) *shared.Result {
+func (r *resumeRepo) FindBySlug(slug string) shared.Result {
 	var resume domain.Resume
 
 	if err := r.db.Where(`slug = ?`, slug).Find(&resume).Error; err != nil {
-		return &shared.Result{Error: err}
+		return shared.Result{Error: err}
 	}
 
-	return &shared.Result{Data: &resume}
+	return shared.Result{Data: &resume}
 }
 
 func (r *resumeRepo) Save(data *domain.Resume) *shared.Result {
