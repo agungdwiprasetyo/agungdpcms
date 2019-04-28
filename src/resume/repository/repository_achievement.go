@@ -29,7 +29,10 @@ func (r *achievementRepo) FindByResumeID(resumeID int) (res shared.Result) {
 
 func (r *achievementRepo) Save(data *domain.Achievement) shared.Result {
 	var ach domain.Achievement
-	if err := r.db.Where(domain.Achievement{Name: data.Name}).Assign(data).FirstOrCreate(&ach).Error; err != nil {
+	where := domain.Achievement{
+		Name: data.Name, Appreciator: data.Appreciator, Year: data.Year,
+	}
+	if err := r.db.Where(where).Assign(data).FirstOrCreate(&ach).Error; err != nil {
 		return shared.Result{Error: err}
 	}
 

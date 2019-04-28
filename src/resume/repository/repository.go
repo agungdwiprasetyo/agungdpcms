@@ -1,25 +1,70 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
+	"github.com/jinzhu/gorm"
 )
 
-// Resume abstraction
-type Resume interface {
-	FindAll() *shared.Result
-	FindBySlug(slug string) shared.Result
-	Save(*domain.Resume) *shared.Result
+// declare all repository
+type (
+	// Resume abstraction
+	Resume interface {
+		FindAll() *shared.Result
+		FindBySlug(slug string) shared.Result
+		Save(*domain.Resume) shared.Result
+	}
+
+	// Achievement abstraction
+	Achievement interface {
+		FindByResumeID(resumeID int) shared.Result
+		Save(data *domain.Achievement) shared.Result
+	}
+
+	// Experience abstraction
+	Experience interface {
+		FindByResumeID(resumeID int) shared.Result
+		Save(data *domain.Experience) shared.Result
+	}
+)
+
+// Repository parent
+type Repository struct {
+	db          *gorm.DB
+	Resume      Resume
+	Achievement Achievement
+	Experience  Experience
 }
 
-// Achievement abstraction
-type Achievement interface {
-	FindByResumeID(resumeID int) shared.Result
-	Save(data *domain.Achievement) shared.Result
+// NewRepository repository constructor
+func NewRepository(db *gorm.DB) *Repository {
+	return &Repository{
+		db:          db,
+		Resume:      NewResumeRepository(db),
+		Achievement: NewAchievementRepository(db),
+		Experience:  NewExperienceRepository(db),
+	}
 }
 
-// Experience abstraction
-type Experience interface {
-	FindByResumeID(resumeID int) shared.Result
-	Save(data *domain.Experience) shared.Result
+// WithTransaction run transaction for each repository
+func (r *Repository) WithTransaction(txFunc func(*Repository) error) (err error) {
+	db := r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("panic: %v", r)
+			db.Rollback()
+		} else if err != nil {
+			db.Rollback()
+		} else {
+			db.Commit()
+		}
+	}()
+
+	// reinit new repository in different memory address
+	manager := NewRepository(db)
+	err = txFunc(manager)
+	return
 }

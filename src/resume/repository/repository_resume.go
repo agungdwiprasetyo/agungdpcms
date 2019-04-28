@@ -35,11 +35,13 @@ func (r *resumeRepo) FindBySlug(slug string) shared.Result {
 	return shared.Result{Data: &resume}
 }
 
-func (r *resumeRepo) Save(data *domain.Resume) *shared.Result {
+func (r *resumeRepo) Save(data *domain.Resume) shared.Result {
+	data.Achievements = nil
+	data.Experiences = nil
 	var resume domain.Resume
 	if err := r.db.Where(domain.Resume{Slug: data.Slug}).Assign(data).FirstOrCreate(&resume).Error; err != nil {
-		return &shared.Result{Error: err}
+		return shared.Result{Error: err}
 	}
 
-	return &shared.Result{Data: &resume}
+	return shared.Result{Data: &resume}
 }

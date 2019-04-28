@@ -27,7 +27,8 @@ func (r *experienceRepo) FindByResumeID(resumeID int) (res shared.Result) {
 
 func (r *experienceRepo) Save(data *domain.Experience) (res shared.Result) {
 	var exp domain.Experience
-	if err := r.db.Where(domain.Experience{Title: data.Title, Company: data.Company}).Assign(data).FirstOrCreate(&exp).Error; err != nil {
+	where := domain.Experience{Title: data.Title, Company: data.Company}
+	if err := r.db.Where(where).Assign(data).FirstOrCreate(&exp).Error; err != nil {
 		res.Error = err
 		return
 	}

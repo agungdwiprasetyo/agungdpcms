@@ -6,3 +6,4 @@ bin
 rundev
 deploy
 static/ws
+static/voyager/*
