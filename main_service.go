@@ -6,20 +6,20 @@ import (
 	"github.com/agungdwiprasetyo/agungdpcms/config"
 	"github.com/agungdwiprasetyo/agungdpcms/middleware"
 	jwtToken "github.com/agungdwiprasetyo/agungdpcms/shared/token"
-	"github.com/agungdwiprasetyo/agungdpcms/src/chat"
 	cd "github.com/agungdwiprasetyo/agungdpcms/src/chat/delivery"
 	cu "github.com/agungdwiprasetyo/agungdpcms/src/chat/usecase"
 	rd "github.com/agungdwiprasetyo/agungdpcms/src/resume/delivery"
 	ru "github.com/agungdwiprasetyo/agungdpcms/src/resume/usecase"
 	ud "github.com/agungdwiprasetyo/agungdpcms/src/user/delivery"
 	uu "github.com/agungdwiprasetyo/agungdpcms/src/user/usecase"
+	"github.com/agungdwiprasetyo/agungdpcms/websocket"
 )
 
 type service struct {
 	conf      *config.Config
 	handler   *handler
 	websocket struct {
-		server  *chat.Server
+		server  *websocket.Server
 		handler *cd.WsHandler
 	}
 }
@@ -48,7 +48,7 @@ func newService(conf *config.Config) *service {
 	srv := new(service)
 	srv.conf = conf
 
-	srv.websocket.server = chat.NewServer()
+	srv.websocket.server = websocket.NewServer()
 	srv.websocket.handler = cd.NewWebsocketHandler(srv.websocket.server, chatUsecase)
 
 	srv.handler = &handler{

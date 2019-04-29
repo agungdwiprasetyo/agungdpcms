@@ -10,11 +10,11 @@ import (
 	"github.com/agungdwiprasetyo/agungdpcms/config"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/agungdpcms/shared/meta"
-	"github.com/agungdwiprasetyo/agungdpcms/src/chat"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/repository"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/serializer"
-	"github.com/gorilla/websocket"
+	"github.com/agungdwiprasetyo/agungdpcms/websocket"
+	ws "github.com/gorilla/websocket"
 )
 
 type chatImpl struct {
@@ -26,7 +26,7 @@ func New(conf *config.Config) Chat {
 	return &chatImpl{repo: repository.NewChatRepo(conf.DB)}
 }
 
-func (uc *chatImpl) Join(roomID string, client *chat.Client) error {
+func (uc *chatImpl) Join(roomID string, client *websocket.Client) error {
 	groupID, _ := strconv.Atoi(roomID)
 	res := uc.repo.FindGroupByID(groupID)
 	if res.Error != nil {
@@ -74,11 +74,11 @@ func (uc *chatImpl) Join(roomID string, client *chat.Client) error {
 			select {
 			case msg, ok := <-client.Data:
 				if !ok {
-					client.Conn.WriteMessage(websocket.CloseMessage, nil)
+					client.Conn.WriteMessage(ws.CloseMessage, nil)
 					break
 				}
 
-				err := client.Conn.WriteMessage(websocket.TextMessage, msg)
+				err := client.Conn.WriteMessage(ws.TextMessage, msg)
 				if err != nil {
 					client.Conn.Close()
 				}
