@@ -10,7 +10,6 @@ import (
 	"github.com/agungdwiprasetyo/agungdpcms/schema"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/graph-gophers/graphql-go"
-	"github.com/graph-gophers/graphql-go/relay"
 )
 
 func (s *service) ServeHTTP() {
@@ -21,7 +20,7 @@ func (s *service) ServeHTTP() {
 	mux := http.NewServeMux()
 
 	mux.Handle("/", http.FileServer(http.Dir(fmt.Sprintf("%s/static", os.Getenv("APP_PATH")))))
-	mux.HandleFunc("/graphiql", injectContext(&relay.Handler{Schema: schema})) // open host in browser for tool for writing, validating, and testing GraphQL queries.
+	// mux.HandleFunc("/graphiql", injectContext(&relay.Handler{Schema: schema})) // open host in browser for tool for writing, validating, and testing GraphQL queries.
 	mux.Handle("/graphql", &customHandler{schema: schema})
 
 	// mux.Handle("/", http.FileServer(http.Dir(fmt.Sprintf("%s/static/ws", os.Getenv("APP_PATH")))))

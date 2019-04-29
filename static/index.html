@@ -12,7 +12,7 @@
 		<script>
 			function graphQLFetcher(graphQLParams) {
                 console.log(JSON.stringify(graphQLParams));
-				return fetch("/graphiql", {
+				return fetch("/graphql", {
 					method: "post",
 					body: JSON.stringify(graphQLParams),
 					credentials: "include",
