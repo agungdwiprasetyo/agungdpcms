@@ -44,6 +44,10 @@ imports:
   subpackages:
   - ext
   - log
+- name: github.com/xeipuuv/gojsonpointer
+  version: 4e3ac2762d5f479393488629ee9370b50873b3a6
+- name: github.com/xeipuuv/gojsonreference
+  version: bd5ef7bd5415a7ac448318e64f11a24cd21e594b
 - name: github.com/xeipuuv/gojsonschema
-  version: f971f3cd73b2899de6923801c147f075263e0c50
+  version: da425ebb7609ba06a0f395fc8a254d1c303364a0
 testImports: []
