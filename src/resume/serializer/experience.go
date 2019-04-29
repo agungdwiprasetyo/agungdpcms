@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
+	graphql "github.com/graph-gophers/graphql-go"
 )
 
 type ExperienceSchema struct {
@@ -30,10 +31,12 @@ func (e *ExperienceSchema) Location() string {
 	return e.Experience.Location
 }
 
-func (e *ExperienceSchema) StartDate() string {
-	return e.Experience.StartDate.Format(time.RFC3339)
+func (e *ExperienceSchema) StartDate() graphql.Time {
+	t, _ := time.Parse(time.RFC3339, e.Experience.StartDate)
+	return graphql.Time{Time: t}
 }
 
-func (e *ExperienceSchema) EndDate() string {
-	return e.Experience.EndDate.Format(time.RFC3339)
+func (e *ExperienceSchema) EndDate() graphql.Time {
+	t, _ := time.Parse(time.RFC3339, e.Experience.EndDate)
+	return graphql.Time{Time: t}
 }

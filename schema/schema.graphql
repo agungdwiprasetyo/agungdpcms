@@ -14,6 +14,8 @@ type Mutation {
     resume: ResumeModule
 }
 
+scalar Time
+
 type Meta {
     page: Int!
     limit: Int!
@@ -43,6 +45,7 @@ input ResumeInput {
     slug: String!
     name: String!
     achievements: [AchievementInput]!
+    experiences: [ExperienceInput]!
 }
 
 type Achievement {
@@ -69,15 +72,15 @@ type Experience {
     title: String!
     company: String!
     location: String!
-    startDate: String!
-    endDate: String!
+    startDate: Time!
+    endDate: Time!
 }
 input ExperienceInput {
     title: String!
     company: String!
     location: String!
-    startDate: String!
-    endDate: String!
+    startDate: Time!
+    endDate: Time!
 }
 type Experiences {
     data: [Experience]!
