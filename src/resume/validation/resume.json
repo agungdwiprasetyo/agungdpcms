@@ -1,0 +1,72 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "title": "JSON Schema for create new resume data",
+    "type": "object",
+    "properties": {
+        "slug": {
+            "type": "string",
+            "minLength": 1
+        },
+        "name": {
+            "type": "string",
+            "minLength": 1
+        },
+        "achievements": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "appreciator": {
+                        "type": "string"
+                    },
+                    "year": {
+                        "type": "integer"
+                    },
+                    "picture": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name", "appreciator", "year"
+                ],
+                "additionalProperties": true
+            }
+        },
+        "experiences": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "company": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "title", "company", "location", "startDate", "endDate"
+                ],
+                "additionalProperties": true
+            }
+        }
+    },
+    "required": [
+        "slug", "name", "achievements", "experiences"
+    ],
+    "additionalProperties": true
+}

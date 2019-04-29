@@ -1,5 +1,5 @@
-hash: 21359abd0db3bd35d5025cdd7a4636a5fe0c6750e52f58cc8924766f8d38fdc2
-updated: 2019-04-15T11:24:38.192533+07:00
+hash: 4a6dcb4366d04f77ddee7919e925153a973cd6e00862724bb08c67ada126a81c
+updated: 2019-04-29T12:35:28.289583+07:00
 imports:
 - name: github.com/agungdwiprasetyo/go-utils
   version: 9c7293a6a4f70d7b31c164265780d8ade79c64c7
@@ -25,7 +25,6 @@ imports:
   - internal/validation
   - introspection
   - log
-  - relay
   - trace
 - name: github.com/jinzhu/gorm
   version: e3987fd4b803c16497aa4dfd2e75db7a6a061a4e
@@ -45,4 +44,6 @@ imports:
   subpackages:
   - ext
   - log
+- name: github.com/xeipuuv/gojsonschema
+  version: f971f3cd73b2899de6923801c147f075263e0c50
 testImports: []

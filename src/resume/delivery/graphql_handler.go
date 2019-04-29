@@ -7,17 +7,23 @@ import (
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/serializer"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/usecase"
+	"github.com/agungdwiprasetyo/agungdpcms/src/resume/validation"
 )
 
 // ResumeHandler graphql
 type ResumeHandler struct {
-	uc   usecase.Resume
-	midd middleware.Middleware
+	uc        usecase.Resume
+	midd      middleware.Middleware
+	validator *validation.Validator
 }
 
 // New constructor
 func New(uc usecase.Resume, midd middleware.Middleware) *ResumeHandler {
-	return &ResumeHandler{uc, midd}
+	return &ResumeHandler{
+		uc:        uc,
+		midd:      midd,
+		validator: validation.New(),
+	}
 }
 
 // GetAllResume handler
@@ -44,6 +50,9 @@ func (h *ResumeHandler) GetResumeBySlug(ctx context.Context, args *domain.Resume
 // CreateResume handler
 func (h *ResumeHandler) CreateResume(ctx context.Context, args *serializer.ResumeSchema) (*serializer.ResumeSchema, error) {
 	h.midd.WithAuth(ctx)
+	if err := h.validator.Validate(args.Resume); err != nil {
+		return nil, err
+	}
 
 	result := h.uc.Save(args.Resume)
 	if result.Error != nil {
