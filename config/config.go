@@ -19,9 +19,10 @@ type Config struct {
 	PublicKey  *rsa.PublicKey
 
 	Env struct {
-		HTTPPort int
-		Username string
-		Password string
+		HTTPPort      int
+		CORSWhitelist string
+		Username      string
+		Password      string
 	}
 }
 
@@ -41,6 +42,12 @@ func Init() *Config {
 	}
 	conf.Env.Username = os.Getenv("USERNAME")
 	conf.Env.Password = os.Getenv("PASSWORD")
+
+	if v, ok := os.LookupEnv("CORS_WHITELIST"); ok {
+		conf.Env.CORSWhitelist = v
+	} else {
+		conf.Env.CORSWhitelist = "*"
+	}
 
 	return conf
 }

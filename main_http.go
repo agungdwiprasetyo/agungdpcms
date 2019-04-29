@@ -17,11 +17,12 @@ func (s *service) ServeHTTP() {
 	gqlSchema := schema.LoadSchema()
 	schema := graphql.MustParseSchema(gqlSchema, s.handler, graphql.UseStringDescriptions(), graphql.UseFieldResolvers())
 
-	mux := http.NewServeMux()
+	handler := newCustomHandler(schema, s.conf)
 
+	// open host in browser for tool for writing, validating, and testing GraphQL queries.
+	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir(fmt.Sprintf("%s/static", os.Getenv("APP_PATH")))))
-	// mux.HandleFunc("/graphiql", injectContext(&relay.Handler{Schema: schema})) // open host in browser for tool for writing, validating, and testing GraphQL queries.
-	mux.Handle("/graphql", &customHandler{schema: schema})
+	mux.Handle("/graphql", handler)
 
 	// mux.Handle("/", http.FileServer(http.Dir(fmt.Sprintf("%s/static/ws", os.Getenv("APP_PATH")))))
 	mux.HandleFunc("/ws", s.websocket.handler.Socket)
