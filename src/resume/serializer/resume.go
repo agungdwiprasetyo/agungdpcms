@@ -8,6 +8,7 @@ import (
 
 type ResumeSchema struct {
 	Resume          *domain.Resume
+	ProfileSchema   *ProfileSchema
 	AchievementList []*AchievementSchema
 	ExperienceList  []*ExperienceSchema
 	SkillList       []*SkillSchema
@@ -23,6 +24,10 @@ func (r *ResumeSchema) Slug() string {
 
 func (r *ResumeSchema) Name() string {
 	return r.Resume.Name
+}
+
+func (r *ResumeSchema) Profile() *ProfileSchema {
+	return r.ProfileSchema
 }
 
 func (r *ResumeSchema) Achievements() []*AchievementSchema {

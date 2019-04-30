@@ -55,9 +55,23 @@ func (uc *resumeUc) FindBySlug(slug string) shared.Result {
 	data := new(serializer.ResumeSchema)
 	data.Resume = resume
 
+	profileChan := make(chan *serializer.ProfileSchema)
 	achChan := make(chan []*serializer.AchievementSchema)
 	expChan := make(chan []*serializer.ExperienceSchema)
 	skillChan := make(chan []*serializer.SkillSchema)
+
+	go func() {
+		defer close(profileChan)
+
+		result := uc.repo.Profile.FindByResumeID(resume.ID)
+		if result.Error != nil {
+			profileChan <- nil
+			return
+		}
+
+		profile := result.Data.(*domain.Profile)
+		profileChan <- &serializer.ProfileSchema{Profile: profile}
+	}()
 
 	go func() {
 		result := uc.repo.Achievement.FindByResumeID(resume.ID)
@@ -98,6 +112,7 @@ func (uc *resumeUc) FindBySlug(slug string) shared.Result {
 		skillChan <- skills
 	}()
 
+	data.ProfileSchema = <-profileChan
 	data.AchievementList = <-achChan
 	data.ExperienceList = <-expChan
 	data.SkillList = <-skillChan
@@ -108,6 +123,7 @@ func (uc *resumeUc) FindBySlug(slug string) shared.Result {
 func (uc *resumeUc) Save(data *domain.Resume) (res shared.Result) {
 	err := uc.repo.WithTransaction(func(repo *rr.Repository) error {
 		achievements, experiences, skills := data.Achievements, data.Experiences, data.Skills
+		profile := data.Profile
 		data.EmptyChild()
 
 		// save resume data
@@ -116,6 +132,14 @@ func (uc *resumeUc) Save(data *domain.Resume) (res shared.Result) {
 			return res.Error
 		}
 		resume := res.Data.(*domain.Resume)
+
+		if profile != nil {
+			profile.ResumeID = resume.ID
+			res = uc.repo.Profile.Save(profile)
+			if res.Error != nil {
+				return res.Error
+			}
+		}
 
 		// save achievement data
 		for _, ach := range achievements {

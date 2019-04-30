@@ -20,6 +20,13 @@ type (
 		Save(*domain.Resume) shared.Result
 	}
 
+	// Profile abstraction
+	Profile interface {
+		FindByResumeID(resumeID int) shared.Result
+		Save(data *domain.Profile) shared.Result
+		Remove(data *domain.Profile) shared.Result
+	}
+
 	// Achievement abstraction
 	Achievement interface {
 		FindByResumeID(resumeID int) shared.Result
@@ -46,6 +53,7 @@ type (
 type Repository struct {
 	db          *gorm.DB
 	Resume      Resume
+	Profile     Profile
 	Achievement Achievement
 	Experience  Experience
 	Skill       Skill
@@ -56,6 +64,7 @@ func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{
 		db:          db,
 		Resume:      NewResumeRepository(db),
+		Profile:     NewProfileRepository(db),
 		Achievement: NewAchievementRepository(db),
 		Experience:  NewExperienceRepository(db),
 		Skill:       NewSkillRepository(db),

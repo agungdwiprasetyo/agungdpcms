@@ -34,7 +34,7 @@ func LoadDatabaseConnection() *gorm.DB {
 	isDebugMode, _ := strconv.ParseBool(os.Getenv("DEBUG_MODE"))
 	db.LogMode(isDebugMode)
 
-	db.AutoMigrate(&rd.Resume{}, &rd.Achievement{}, &rd.Education{}, &rd.Experience{}, &rd.Skill{})
+	db.AutoMigrate(&rd.Resume{}, &rd.Achievement{}, &rd.Education{}, &rd.Experience{}, &rd.Skill{}, &rd.Profile{})
 	db.AutoMigrate(&cd.Group{}, &cd.Message{})
 	db.AutoMigrate(&ud.User{}, &ud.Role{})
 

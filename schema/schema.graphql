@@ -44,6 +44,7 @@ type Resume {
     id: ID!
     slug: String!
     name: String!
+    profile: Profile
     achievements: [Achievement]!
     experiences: [Experience]!
     skills: [Skill]!
@@ -55,9 +56,31 @@ type Resumes {
 input ResumeInput {
     slug: String!
     name: String!
+    profile: ProfileInput!
     achievements: [AchievementInput]!
     experiences: [ExperienceInput]!
     skills: [SkillInput]!
+}
+
+type Profile {
+    id: Int!
+    resume_id: Int!
+    fullName: String!
+    religion: String!
+	hobby: String!
+	github: String!
+	linkedin: String!
+	instagram: String!
+	facebook: String!
+}
+input ProfileInput {
+    fullName: String!
+    religion: String!
+	hobby: String!
+	github: String!
+	linkedin: String!
+	instagram: String!
+	facebook: String!
 }
 
 type Achievement {
