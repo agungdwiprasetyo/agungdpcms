@@ -5,13 +5,13 @@ schema {
 
 type Query {
     chat: ChatModule
-    resume: ResumeModule
+    resume: ResumeQuery
     user: UserModule
 }
 
 type Mutation {
     chat: ChatModule
-    resume: ResumeModule
+    resume: ResumeMutation
 }
 
 scalar Time
@@ -23,11 +23,21 @@ type Meta {
     totalPages: Int!
 }
 
+input Filter {
+    page: Int!
+    limit: Int!
+    sort: String!
+    sortBy: String!
+}
+
 ################### Resume Module Area
-type ResumeModule {
-    getAllResume(): Resumes
+type ResumeQuery {
+    getAllResume(filter: Filter!): Resumes
     getResumeBySlug(slug: String!): Resume
+}
+type ResumeMutation {
     createResume(resume: ResumeInput!): Resume
+    remove(achievementID: Int, experienceID: Int, skillID: Int): String!
 }
 
 type Resume {
@@ -39,7 +49,7 @@ type Resume {
     skills: [Skill]!
 }
 type Resumes {
-    meta: Meta!
+    meta: Meta
     data: [Resume]!
 }
 input ResumeInput {

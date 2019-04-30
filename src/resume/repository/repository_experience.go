@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/jinzhu/gorm"
@@ -17,7 +19,7 @@ func NewExperienceRepository(db *gorm.DB) Experience {
 
 func (r *experienceRepo) FindByResumeID(resumeID int) (res shared.Result) {
 	var experiences []*domain.Experience
-	if err := r.db.Where(`resume_id = ?`, resumeID).Find(&experiences).Error; err != nil {
+	if err := r.db.Where(domain.Experience{ResumeID: resumeID}).Find(&experiences).Error; err != nil {
 		res.Error = err
 		return
 	}
@@ -34,5 +36,16 @@ func (r *experienceRepo) Save(data *domain.Experience) (res shared.Result) {
 	}
 
 	res.Data = &exp
+	return
+}
+
+func (r *experienceRepo) Remove(data *domain.Experience) (res shared.Result) {
+	db := r.db.Delete(data)
+	if err := db.Error; err != nil {
+		res.Error = err
+	}
+	if affected := db.RowsAffected; affected == 0 {
+		res.Error = fmt.Errorf("data with id=%d not found", data.ID)
+	}
 	return
 }

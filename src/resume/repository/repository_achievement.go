@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/jinzhu/gorm"
@@ -40,8 +42,12 @@ func (r *achievementRepo) Save(data *domain.Achievement) shared.Result {
 }
 
 func (r *achievementRepo) Remove(data *domain.Achievement) (res shared.Result) {
-	if err := r.db.Delete(data).Error; err != nil {
+	db := r.db.Delete(data)
+	if err := db.Error; err != nil {
 		res.Error = err
+	}
+	if affected := db.RowsAffected; affected == 0 {
+		res.Error = fmt.Errorf("data with id=%d not found", data.ID)
 	}
 	return
 }

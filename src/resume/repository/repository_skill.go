@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/jinzhu/gorm"
@@ -37,4 +39,15 @@ func (r *skillRepo) Save(data *domain.Skill) shared.Result {
 	}
 
 	return shared.Result{Data: &skill}
+}
+
+func (r *skillRepo) Remove(data *domain.Skill) (res shared.Result) {
+	db := r.db.Delete(data)
+	if err := db.Error; err != nil {
+		res.Error = err
+	}
+	if affected := db.RowsAffected; affected == 0 {
+		res.Error = fmt.Errorf("data with id=%d not found", data.ID)
+	}
+	return
 }

@@ -3,6 +3,8 @@ package repository
 import (
 	"fmt"
 
+	"github.com/agungdwiprasetyo/agungdpcms/shared/filter"
+
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/jinzhu/gorm"
@@ -12,7 +14,8 @@ import (
 type (
 	// Resume abstraction
 	Resume interface {
-		FindAll() *shared.Result
+		FindAll(*filter.Filter) shared.Result
+		Count(*domain.Resume) int
 		FindBySlug(slug string) shared.Result
 		Save(*domain.Resume) shared.Result
 	}
@@ -28,12 +31,14 @@ type (
 	Experience interface {
 		FindByResumeID(resumeID int) shared.Result
 		Save(data *domain.Experience) shared.Result
+		Remove(data *domain.Experience) shared.Result
 	}
 
 	// Skill abstraction
 	Skill interface {
 		FindByResumeID(resumeID int) shared.Result
 		Save(data *domain.Skill) shared.Result
+		Remove(data *domain.Skill) shared.Result
 	}
 )
 

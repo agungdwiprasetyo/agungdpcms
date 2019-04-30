@@ -3,6 +3,8 @@ package usecase
 import (
 	"github.com/agungdwiprasetyo/agungdpcms/config"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/shared/filter"
+	"github.com/agungdwiprasetyo/agungdpcms/shared/meta"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	rr "github.com/agungdwiprasetyo/agungdpcms/src/resume/repository"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/serializer"
@@ -19,8 +21,9 @@ func NewResumeUsecase(conf *config.Config) Resume {
 	}
 }
 
-func (uc *resumeUc) FindAll() *shared.Result {
-	result := uc.repo.Resume.FindAll()
+func (uc *resumeUc) FindAll(filter *filter.Filter) shared.Result {
+	filter.CalculateOffset()
+	result := uc.repo.Resume.FindAll(filter)
 	if result.Error != nil {
 		return result
 	}
@@ -30,7 +33,15 @@ func (uc *resumeUc) FindAll() *shared.Result {
 	for _, d := range data {
 		fields = append(fields, &serializer.ResumeSchema{Resume: d})
 	}
-	return &shared.Result{Data: &serializer.ResumeListSchema{Data: fields}}
+
+	count := uc.repo.Resume.Count(&domain.Resume{})
+
+	m := &meta.Meta{Page: int(filter.Page), Limit: int(filter.Limit), TotalRecords: count}
+	m.CalculatePages()
+
+	return shared.Result{Data: &serializer.ResumeListSchema{
+		M: &meta.MetaSchema{Meta: m}, Data: fields,
+	}}
 }
 
 func (uc *resumeUc) FindBySlug(slug string) shared.Result {
@@ -144,4 +155,19 @@ func (uc *resumeUc) Save(data *domain.Resume) (res shared.Result) {
 	}
 
 	return res
+}
+
+func (uc *resumeUc) RemoveAchievement(id int) (res shared.Result) {
+	ach := domain.Achievement{ID: id}
+	return uc.repo.Achievement.Remove(&ach)
+}
+
+func (uc *resumeUc) RemoveExperience(id int) (res shared.Result) {
+	exp := domain.Experience{ID: id}
+	return uc.repo.Experience.Remove(&exp)
+}
+
+func (uc *resumeUc) RemoveSkill(id int) (res shared.Result) {
+	skill := domain.Skill{ID: id}
+	return uc.repo.Skill.Remove(&skill)
 }

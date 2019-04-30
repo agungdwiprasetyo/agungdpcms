@@ -1,13 +1,16 @@
 package meta
 
+import "math"
+
+// Meta model
 type Meta struct {
 	Page         int `json:"page"`
 	Limit        int `json:"limit"`
-	Offset       int `json:"-"`
 	TotalPages   int `json:"totalPages"`
 	TotalRecords int `json:"totalRecords"`
 }
 
-func (m *Meta) CalculateOffset() {
-	m.Offset = (m.Page - 1) * m.Limit
+// CalculatePages meta method
+func (m *Meta) CalculatePages() {
+	m.TotalPages = int(math.Ceil(float64(m.TotalRecords) / float64(m.Limit)))
 }

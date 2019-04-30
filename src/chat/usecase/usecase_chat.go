@@ -2,13 +2,13 @@ package usecase
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"strconv"
 	"time"
 
 	"github.com/agungdwiprasetyo/agungdpcms/config"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/shared/filter"
 	"github.com/agungdwiprasetyo/agungdpcms/shared/meta"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/repository"
@@ -90,11 +90,11 @@ func (uc *chatImpl) Join(roomID string, client *websocket.Client) error {
 }
 
 func (uc *chatImpl) FindAllMessagesByGroupID(args *domain.GetAllMessageArgs) (res shared.Result) {
+	filter := filter.Filter{Page: args.Page, Limit: args.Limit}
+	filter.CalculateOffset()
 	mt := &meta.Meta{Page: int(args.Page), Limit: int(args.Limit)}
-	mt.CalculateOffset()
-	fmt.Printf("%+v\n", mt)
 
-	res = uc.repo.FindAllMessage(int(args.GroupID), mt.Offset, mt.Limit)
+	res = uc.repo.FindAllMessage(int(args.GroupID), int(filter.Offset), mt.Limit)
 	if res.Error != nil {
 		return
 	}
