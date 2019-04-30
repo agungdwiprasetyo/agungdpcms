@@ -36,6 +36,7 @@ type Resume {
     name: String!
     achievements: [Achievement]!
     experiences: [Experience]!
+    skills: [Skill]!
 }
 type Resumes {
     meta: Meta!
@@ -46,6 +47,7 @@ input ResumeInput {
     name: String!
     achievements: [AchievementInput]!
     experiences: [ExperienceInput]!
+    skills: [SkillInput]!
 }
 
 type Achievement {
@@ -63,6 +65,7 @@ input AchievementInput {
     picture: String!
 }
 type Achievements {
+    meta: Meta!
     data: [Achievement]!
 }
 
@@ -83,7 +86,27 @@ input ExperienceInput {
     endDate: Time!
 }
 type Experiences {
+    meta: Meta!
     data: [Experience]!
+}
+
+type Skill {
+    id: Int!
+    resumeId: Int!
+    type: String!
+    name: String!
+    description: String!
+    percentage: Float!
+}
+input SkillInput {
+    type: String!
+    name: String!
+    description: String!
+    percentage: Float!
+}
+type Skills {
+    meta: Meta!
+    data: [Skill]!
 }
 ################### End of Resume Module Area
 

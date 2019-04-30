@@ -21,12 +21,19 @@ type (
 	Achievement interface {
 		FindByResumeID(resumeID int) shared.Result
 		Save(data *domain.Achievement) shared.Result
+		Remove(data *domain.Achievement) shared.Result
 	}
 
 	// Experience abstraction
 	Experience interface {
 		FindByResumeID(resumeID int) shared.Result
 		Save(data *domain.Experience) shared.Result
+	}
+
+	// Skill abstraction
+	Skill interface {
+		FindByResumeID(resumeID int) shared.Result
+		Save(data *domain.Skill) shared.Result
 	}
 )
 
@@ -36,6 +43,7 @@ type Repository struct {
 	Resume      Resume
 	Achievement Achievement
 	Experience  Experience
+	Skill       Skill
 }
 
 // NewRepository repository constructor
@@ -45,6 +53,7 @@ func NewRepository(db *gorm.DB) *Repository {
 		Resume:      NewResumeRepository(db),
 		Achievement: NewAchievementRepository(db),
 		Experience:  NewExperienceRepository(db),
+		Skill:       NewSkillRepository(db),
 	}
 }
 

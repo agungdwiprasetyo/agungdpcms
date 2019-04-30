@@ -46,6 +46,7 @@ func (uc *resumeUc) FindBySlug(slug string) shared.Result {
 
 	achChan := make(chan []*serializer.AchievementSchema)
 	expChan := make(chan []*serializer.ExperienceSchema)
+	skillChan := make(chan []*serializer.SkillSchema)
 
 	go func() {
 		result := uc.repo.Achievement.FindByResumeID(resume.ID)
@@ -73,15 +74,30 @@ func (uc *resumeUc) FindBySlug(slug string) shared.Result {
 		expChan <- experiences
 	}()
 
+	go func() {
+		result = uc.repo.Skill.FindByResumeID(resume.ID)
+		if result.Error != nil {
+			return
+		}
+
+		var skills []*serializer.SkillSchema
+		for _, skill := range result.Data.([]*domain.Skill) {
+			skills = append(skills, &serializer.SkillSchema{Skill: skill})
+		}
+		skillChan <- skills
+	}()
+
 	data.AchievementList = <-achChan
 	data.ExperienceList = <-expChan
+	data.SkillList = <-skillChan
 
 	return shared.Result{Data: data}
 }
 
 func (uc *resumeUc) Save(data *domain.Resume) (res shared.Result) {
 	err := uc.repo.WithTransaction(func(repo *rr.Repository) error {
-		achievements, experiences := data.Achievements, data.Experiences
+		achievements, experiences, skills := data.Achievements, data.Experiences, data.Skills
+		data.EmptyChild()
 
 		// save resume data
 		res = repo.Resume.Save(data)
@@ -108,6 +124,16 @@ func (uc *resumeUc) Save(data *domain.Resume) (res shared.Result) {
 				return res.Error
 			}
 			resume.Experiences = append(resume.Experiences, res.Data.(*domain.Experience))
+		}
+
+		// save skills data
+		for _, skill := range skills {
+			skill.ResumeID = resume.ID
+			res = repo.Skill.Save(skill)
+			if res.Error != nil {
+				return res.Error
+			}
+			resume.Skills = append(resume.Skills, res.Data.(*domain.Skill))
 		}
 
 		res.Data = resume

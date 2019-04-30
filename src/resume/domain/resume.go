@@ -15,3 +15,11 @@ type Resume struct {
 func (r *Resume) TableName() string {
 	return "resumes"
 }
+
+// EmptyChild make empty for resume child
+func (r *Resume) EmptyChild() {
+	r.Achievements = nil
+	r.Educations = nil
+	r.Experiences = nil
+	r.Skills = nil
+}

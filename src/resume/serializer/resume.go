@@ -10,6 +10,7 @@ type ResumeSchema struct {
 	Resume          *domain.Resume
 	AchievementList []*AchievementSchema
 	ExperienceList  []*ExperienceSchema
+	SkillList       []*SkillSchema
 }
 
 func (r *ResumeSchema) ID() graphql.ID {
@@ -30,6 +31,10 @@ func (r *ResumeSchema) Achievements() []*AchievementSchema {
 
 func (r *ResumeSchema) Experiences() []*ExperienceSchema {
 	return r.ExperienceList
+}
+
+func (r *ResumeSchema) Skills() []*SkillSchema {
+	return r.SkillList
 }
 
 type ResumeListSchema struct {
