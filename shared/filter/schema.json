@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://api.agungdwiprasetyo.com/cms/filter.json",
+    "title": "JSON Schema for filter",
+    "type": "object",
+    "properties": {
+        "page": {
+            "type": "integer",
+            "minimum": 1
+        },
+        "limit": {
+            "type": "integer",
+            "minimum": 1
+        },
+        "sort": {
+            "type": "string",
+            "enum": ["asc", "desc", "ASC", "DESC"]
+        },
+        "sortBy": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "page", "limit"
+    ],
+    "additionalProperties": true
+}

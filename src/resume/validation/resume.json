@@ -75,7 +75,7 @@
                 "properties": {
                     "type": {
                         "type": "string",
-                        "enum": ["Programming Language", "Tools"]
+                        "enum": ["Programming Language", "Tools", "Technology"]
                     },
                     "name": {
                         "type": "string",
