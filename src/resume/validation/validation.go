@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -12,10 +11,10 @@ import (
 
 // Validator for create resume json schema
 type Validator struct {
-	schema string
+	resume gojsonschema.JSONLoader
 }
 
-// New validator constructor
+// New validator constructor, only once to read file *.json
 func New() *Validator {
 	s, err := ioutil.ReadFile(fmt.Sprintf("%s/src/resume/validation/resume.json", os.Getenv("APP_PATH")))
 	if err != nil {
@@ -23,28 +22,22 @@ func New() *Validator {
 	}
 
 	return &Validator{
-		schema: string(s),
+		resume: gojsonschema.NewStringLoader(string(s)),
 	}
 }
 
 // Validate create resume input
 func (v *Validator) Validate(input interface{}) error {
-	b, err := json.Marshal(input)
-	if err != nil {
-		return err
-	}
-
-	document := gojsonschema.NewStringLoader(string(b))
-	schema := gojsonschema.NewStringLoader(v.schema)
-	result, err := gojsonschema.Validate(schema, document)
+	document := gojsonschema.NewGoLoader(input)
+	result, err := gojsonschema.Validate(v.resume, document)
 	if err != nil {
 		return err
 	}
 
 	multiError := utils.NewMultiError()
 	if !result.Valid() {
-		for i, desc := range result.Errors() {
-			multiError.Append(fmt.Sprint(i), fmt.Errorf("%v", desc))
+		for _, desc := range result.Errors() {
+			multiError.Append(desc.Field(), fmt.Errorf("value '%v' %v;", desc.Value(), desc.Description()))
 		}
 	}
 
