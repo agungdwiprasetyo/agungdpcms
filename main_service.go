@@ -6,12 +6,14 @@ import (
 	"github.com/agungdwiprasetyo/agungdpcms/config"
 	"github.com/agungdwiprasetyo/agungdpcms/middleware"
 	jwtToken "github.com/agungdwiprasetyo/agungdpcms/shared/token"
+	"github.com/agungdwiprasetyo/agungdpcms/src/chat"
 	cd "github.com/agungdwiprasetyo/agungdpcms/src/chat/delivery"
-	cu "github.com/agungdwiprasetyo/agungdpcms/src/chat/usecase"
+	"github.com/agungdwiprasetyo/agungdpcms/src/master"
+	md "github.com/agungdwiprasetyo/agungdpcms/src/master/delivery"
+	"github.com/agungdwiprasetyo/agungdpcms/src/resume"
 	rd "github.com/agungdwiprasetyo/agungdpcms/src/resume/delivery"
-	ru "github.com/agungdwiprasetyo/agungdpcms/src/resume/usecase"
+	"github.com/agungdwiprasetyo/agungdpcms/src/user"
 	ud "github.com/agungdwiprasetyo/agungdpcms/src/user/delivery"
-	uu "github.com/agungdwiprasetyo/agungdpcms/src/user/usecase"
 	"github.com/agungdwiprasetyo/agungdpcms/websocket"
 )
 
@@ -25,9 +27,10 @@ type service struct {
 }
 
 type handler struct {
-	Resume *rd.ResumeHandler
-	Chat   *cd.GraphqlHandler
-	User   *ud.GraphqlHandler
+	Resume *rd.GraphQLHandler
+	Chat   *cd.GraphQLHandler
+	User   *ud.GraphQLHandler
+	Master *md.GraphQLHandler
 }
 
 func newService(conf *config.Config) *service {
@@ -36,25 +39,24 @@ func newService(conf *config.Config) *service {
 	token := jwtToken.New(conf.PrivateKey, conf.PublicKey, 24*time.Hour)
 	midd := middleware.NewBearer(conf, token)
 
-	resumeUsecase := ru.NewResumeUsecase(conf)
-	resumeHandler := rd.New(resumeUsecase, midd)
-
-	chatUsecase := cu.New(conf)
-	chatGqlHandler := cd.NewGraphqlHandler(chatUsecase, midd)
-
-	userUsecase := uu.NewUserUsecase(conf, token)
-	userGqlHandler := ud.NewGraphqlHandler(userUsecase, midd)
+	// init master module
+	masterModule := master.New(conf, midd)
+	// init user module
+	userModule := user.New(conf, midd, token)
+	// init resume module
+	resumeModule := resume.New(conf, midd)
+	// init chat module
+	chatModule := chat.New(conf, midd)
 
 	srv := new(service)
 	srv.conf = conf
-
 	srv.websocket.server = websocket.NewServer()
-	srv.websocket.handler = cd.NewWebsocketHandler(srv.websocket.server, chatUsecase)
-
+	srv.websocket.handler = cd.NewWebsocketHandler(srv.websocket.server, chatModule.Usecase)
 	srv.handler = &handler{
-		Resume: resumeHandler,
-		Chat:   chatGqlHandler,
-		User:   userGqlHandler,
+		Resume: resumeModule.Handler,
+		Chat:   chatModule.Handler,
+		User:   userModule.Handler,
+		Master: masterModule.Handler,
 	}
 
 	return srv

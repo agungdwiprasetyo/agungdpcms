@@ -1,11 +1,11 @@
 package usecase
 
 import (
-	"github.com/agungdwiprasetyo/agungdpcms/config"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/agungdpcms/shared/filter"
 	"github.com/agungdwiprasetyo/agungdpcms/shared/meta"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
+	"github.com/agungdwiprasetyo/agungdpcms/src/resume/repository"
 	rr "github.com/agungdwiprasetyo/agungdpcms/src/resume/repository"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/serializer"
 )
@@ -15,9 +15,9 @@ type resumeUc struct {
 }
 
 // NewResumeUsecase constructor
-func NewResumeUsecase(conf *config.Config) Resume {
+func NewResumeUsecase(repo *repository.Repository) Resume {
 	return &resumeUc{
-		repo: rr.NewRepository(conf.DB),
+		repo: repo,
 	}
 }
 

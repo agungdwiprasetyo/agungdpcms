@@ -12,16 +12,16 @@ import (
 	"github.com/agungdwiprasetyo/go-utils"
 )
 
-// ResumeHandler graphql
-type ResumeHandler struct {
+// GraphQLHandler graphql
+type GraphQLHandler struct {
 	uc        usecase.Resume
 	midd      middleware.Middleware
 	validator *validation.Validator
 }
 
-// New constructor
-func New(uc usecase.Resume, midd middleware.Middleware) *ResumeHandler {
-	return &ResumeHandler{
+// NewGraphQLHandler constructor
+func NewGraphQLHandler(uc usecase.Resume, midd middleware.Middleware) *GraphQLHandler {
+	return &GraphQLHandler{
 		uc:        uc,
 		midd:      midd,
 		validator: validation.New(),
@@ -29,7 +29,7 @@ func New(uc usecase.Resume, midd middleware.Middleware) *ResumeHandler {
 }
 
 // GetAllResume handler
-func (h *ResumeHandler) GetAllResume(ctx context.Context, args *domain.GetAllResumeArgs) (*serializer.ResumeListSchema, error) {
+func (h *GraphQLHandler) GetAllResume(ctx context.Context, args *domain.GetAllResumeArgs) (*serializer.ResumeListSchema, error) {
 	h.midd.WithAuth(ctx)
 	if err := h.validator.Validate(args.Filter); err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func (h *ResumeHandler) GetAllResume(ctx context.Context, args *domain.GetAllRes
 }
 
 // GetResumeBySlug handler
-func (h *ResumeHandler) GetResumeBySlug(ctx context.Context, args *domain.ResumeSlugInput) (*serializer.ResumeSchema, error) {
+func (h *GraphQLHandler) GetResumeBySlug(ctx context.Context, args *domain.ResumeSlugInput) (*serializer.ResumeSchema, error) {
 	result := h.uc.FindBySlug(args.Slug)
 	if result.Error != nil {
 		return nil, result.Error
@@ -53,7 +53,7 @@ func (h *ResumeHandler) GetResumeBySlug(ctx context.Context, args *domain.Resume
 }
 
 // CreateResume handler
-func (h *ResumeHandler) CreateResume(ctx context.Context, args *serializer.ResumeSchema) (*serializer.ResumeSchema, error) {
+func (h *GraphQLHandler) CreateResume(ctx context.Context, args *serializer.ResumeSchema) (*serializer.ResumeSchema, error) {
 	h.midd.WithAuth(ctx)
 	if err := h.validator.Validate(args.Resume); err != nil {
 		return nil, customerror.New("failed to validate payload", err)
@@ -68,7 +68,7 @@ func (h *ResumeHandler) CreateResume(ctx context.Context, args *serializer.Resum
 }
 
 // Remove handler
-func (h *ResumeHandler) Remove(ctx context.Context, args *domain.RemoveArgs) (string, error) {
+func (h *GraphQLHandler) Remove(ctx context.Context, args *domain.RemoveArgs) (string, error) {
 	h.midd.WithAuth(ctx)
 
 	multiError := utils.NewMultiError()

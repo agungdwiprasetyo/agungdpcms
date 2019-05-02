@@ -3,7 +3,6 @@ package usecase
 import (
 	"fmt"
 
-	"github.com/agungdwiprasetyo/agungdpcms/config"
 	"github.com/agungdwiprasetyo/agungdpcms/helper"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/agungdpcms/shared/token"
@@ -13,22 +12,20 @@ import (
 )
 
 type userUc struct {
-	userRepo repository.User
-	roleRepo repository.Role
-	token    token.Token
+	repo  *repository.Repository
+	token token.Token
 }
 
 // NewUserUsecase construct user usecase
-func NewUserUsecase(conf *config.Config, token token.Token) User {
+func NewUserUsecase(repo *repository.Repository, token token.Token) User {
 	return &userUc{
-		userRepo: repository.NewUserRepository(conf.DB),
-		roleRepo: repository.NewRoleRepository(conf.DB),
-		token:    token,
+		repo:  repo,
+		token: token,
 	}
 }
 
 func (uc *userUc) Login(username, password string) (res shared.Result) {
-	res = <-uc.userRepo.FindByUsername(username)
+	res = <-uc.repo.User.FindByUsername(username)
 	if res.Error != nil {
 		return shared.Result{Error: fmt.Errorf("invalid username/password")}
 	}
@@ -39,7 +36,7 @@ func (uc *userUc) Login(username, password string) (res shared.Result) {
 		return shared.Result{Error: fmt.Errorf("invalid username/password")}
 	}
 
-	res = <-uc.roleRepo.FindByID(userData.RoleID)
+	res = <-uc.repo.Role.FindByID(userData.RoleID)
 	if res.Error != nil {
 		return shared.Result{Error: fmt.Errorf("invalid username/password")}
 	}

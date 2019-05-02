@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/agungdwiprasetyo/agungdpcms/config"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/agungdpcms/shared/filter"
 	"github.com/agungdwiprasetyo/agungdpcms/shared/meta"
@@ -18,17 +17,19 @@ import (
 )
 
 type chatImpl struct {
-	repo repository.Chat
+	repo *repository.Repository
 }
 
 // New chat usecase
-func New(conf *config.Config) Chat {
-	return &chatImpl{repo: repository.NewChatRepo(conf.DB)}
+func New(repo *repository.Repository) Chat {
+	return &chatImpl{
+		repo: repo,
+	}
 }
 
 func (uc *chatImpl) Join(roomID string, client *websocket.Client) error {
 	groupID, _ := strconv.Atoi(roomID)
-	res := uc.repo.FindGroupByID(groupID)
+	res := uc.repo.Chat.FindGroupByID(groupID)
 	if res.Error != nil {
 		return res.Error
 	}
@@ -57,7 +58,7 @@ func (uc *chatImpl) Join(roomID string, client *websocket.Client) error {
 			json.Unmarshal(message, &m)
 			m.ClientID = client.ID
 			m.Timestamp = &now
-			uc.repo.SaveMessage(&m)
+			uc.repo.Chat.SaveMessage(&m)
 
 			message, _ = json.Marshal(m)
 			client.Server.Message <- message
@@ -94,7 +95,7 @@ func (uc *chatImpl) FindAllMessagesByGroupID(args *domain.GetAllMessageArgs) (re
 	filter.CalculateOffset()
 	mt := &meta.Meta{Page: int(args.Page), Limit: int(args.Limit)}
 
-	res = uc.repo.FindAllMessage(int(args.GroupID), int(filter.Offset), mt.Limit)
+	res = uc.repo.Chat.FindAllMessage(int(args.GroupID), int(filter.Offset), mt.Limit)
 	if res.Error != nil {
 		return
 	}
@@ -106,7 +107,7 @@ func (uc *chatImpl) FindAllMessagesByGroupID(args *domain.GetAllMessageArgs) (re
 	}
 	data.M = &meta.MetaSchema{Meta: mt}
 
-	res = uc.repo.CountByGroupID(int(args.GroupID))
+	res = uc.repo.Chat.CountByGroupID(int(args.GroupID))
 	if res.Error != nil {
 		return
 	}

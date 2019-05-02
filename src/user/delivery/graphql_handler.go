@@ -8,22 +8,22 @@ import (
 	"github.com/agungdwiprasetyo/agungdpcms/src/user/usecase"
 )
 
-// GraphqlHandler model
-type GraphqlHandler struct {
+// GraphQLHandler model
+type GraphQLHandler struct {
 	uc   usecase.User
 	midd middleware.Middleware
 }
 
-// NewGraphqlHandler delivery
-func NewGraphqlHandler(uc usecase.User, midd middleware.Middleware) *GraphqlHandler {
-	return &GraphqlHandler{
+// NewGraphQLHandler delivery
+func NewGraphQLHandler(uc usecase.User, midd middleware.Middleware) *GraphQLHandler {
+	return &GraphQLHandler{
 		uc:   uc,
 		midd: midd,
 	}
 }
 
 // Login handler
-func (h *GraphqlHandler) Login(ctx context.Context, args *LoginArgs) (*serializer.UserSchema, error) {
+func (h *GraphQLHandler) Login(ctx context.Context, args *LoginArgs) (*serializer.UserSchema, error) {
 	res := h.uc.Login(args.Username, args.Password)
 	if res.Error != nil {
 		return nil, res.Error

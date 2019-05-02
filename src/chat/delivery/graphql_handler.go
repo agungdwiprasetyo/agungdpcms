@@ -11,22 +11,22 @@ import (
 	"github.com/agungdwiprasetyo/go-utils/debug"
 )
 
-// GraphqlHandler model
-type GraphqlHandler struct {
+// GraphQLHandler model
+type GraphQLHandler struct {
 	uc   usecase.Chat
 	midd middleware.Middleware
 }
 
-// NewGraphqlHandler constructor
-func NewGraphqlHandler(uc usecase.Chat, midd middleware.Middleware) *GraphqlHandler {
-	return &GraphqlHandler{
+// NewGraphQLHandler constructor
+func NewGraphQLHandler(uc usecase.Chat, midd middleware.Middleware) *GraphQLHandler {
+	return &GraphQLHandler{
 		uc:   uc,
 		midd: midd,
 	}
 }
 
 // GetAllMessage graphql handler
-func (h *GraphqlHandler) GetAllMessage(ctx context.Context, args *domain.GetAllMessageArgs) (*serializer.MessageListSchema, error) {
+func (h *GraphQLHandler) GetAllMessage(ctx context.Context, args *domain.GetAllMessageArgs) (*serializer.MessageListSchema, error) {
 	ctx = h.midd.WithAuth(ctx)
 	userData := shared.ParseUserData(ctx)
 	debug.PrintJSON(userData)

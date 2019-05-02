@@ -1,24 +1,24 @@
-package master
+package resume
 
 import (
 	"github.com/agungdwiprasetyo/agungdpcms/config"
 	"github.com/agungdwiprasetyo/agungdpcms/middleware"
-	"github.com/agungdwiprasetyo/agungdpcms/src/master/delivery"
-	"github.com/agungdwiprasetyo/agungdpcms/src/master/repository"
-	"github.com/agungdwiprasetyo/agungdpcms/src/master/usecase"
+	"github.com/agungdwiprasetyo/agungdpcms/src/resume/delivery"
+	"github.com/agungdwiprasetyo/agungdpcms/src/resume/repository"
+	"github.com/agungdwiprasetyo/agungdpcms/src/resume/usecase"
 )
 
 // Module model
 type Module struct {
 	Handler    *delivery.GraphQLHandler
-	Usecase    usecase.Master
+	Usecase    usecase.Resume
 	Repository *repository.Repository
 }
 
-// New master module constructor
+// New resume module constructor
 func New(conf *config.Config, midd middleware.Middleware) *Module {
 	repo := repository.NewRepository(conf.DB)
-	uc := usecase.NewMasterUsecase(repo)
+	uc := usecase.NewResumeUsecase(repo)
 	handler := delivery.NewGraphQLHandler(uc, midd)
 
 	return &Module{

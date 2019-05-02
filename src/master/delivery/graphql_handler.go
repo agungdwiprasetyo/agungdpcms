@@ -5,13 +5,13 @@ import (
 	"github.com/agungdwiprasetyo/agungdpcms/src/master/usecase"
 )
 
-// GraphQlHandler graphql handler for master module
-type GraphQlHandler struct {
+// GraphQLHandler graphql handler for master module
+type GraphQLHandler struct {
 	uc   usecase.Master
 	midd middleware.Middleware
 }
 
-// NewGraphQlHandler construct master delivery
-func NewGraphQlHandler(uc usecase.Master, midd middleware.Middleware) *GraphQlHandler {
-	return &GraphQlHandler{uc: uc, midd: midd}
+// NewGraphQLHandler construct master delivery
+func NewGraphQLHandler(uc usecase.Master, midd middleware.Middleware) *GraphQLHandler {
+	return &GraphQLHandler{uc: uc, midd: midd}
 }
