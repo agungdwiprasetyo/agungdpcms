@@ -42,7 +42,7 @@ func New() *Validator {
 }
 
 // Validate create resume input
-func (v *Validator) Validate(input interface{}) (err error) {
+func (v *Validator) Validate(input interface{}) (multiError *utils.MultiError) {
 	document := gojsonschema.NewGoLoader(input)
 
 	// take value input if type is pointer
@@ -53,26 +53,25 @@ func (v *Validator) Validate(input interface{}) (err error) {
 	input = refValue.Interface()
 
 	var result *gojsonschema.Result
+	var err error
+	multiError = utils.NewMultiError()
+
 	switch input.(type) {
 	case domain.Resume:
 		result, err = v.resume.Validate(document)
 	case filter.Filter:
 		result, err = v.filter.Validate(document)
 	default:
-		return fmt.Errorf("unknown input type")
+		err = fmt.Errorf("unknown input type of %T", input)
 	}
 	if err != nil {
-		return err
+		multiError.Append("validateInput", err)
+		return
 	}
 
-	return parseError(result)
-}
-
-func parseError(result *gojsonschema.Result) error {
-	multiError := utils.NewMultiError()
 	if !result.Valid() {
 		for _, desc := range result.Errors() {
-			multiError.Append(desc.Field(), fmt.Errorf("value '%v' %v;", desc.Value(), desc.Description()))
+			multiError.Append(desc.Field(), fmt.Errorf("value '%v' %v", desc.Value(), desc.Description()))
 		}
 	}
 

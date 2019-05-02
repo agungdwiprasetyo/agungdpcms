@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/agungdwiprasetyo/agungdpcms/middleware"
+	"github.com/agungdwiprasetyo/agungdpcms/shared/customerror"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/serializer"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/usecase"
@@ -55,7 +56,7 @@ func (h *ResumeHandler) GetResumeBySlug(ctx context.Context, args *domain.Resume
 func (h *ResumeHandler) CreateResume(ctx context.Context, args *serializer.ResumeSchema) (*serializer.ResumeSchema, error) {
 	h.midd.WithAuth(ctx)
 	if err := h.validator.Validate(args.Resume); err != nil {
-		return nil, err
+		return nil, customerror.New("failed to validate payload", err)
 	}
 
 	result := h.uc.Save(args.Resume)
@@ -91,7 +92,7 @@ func (h *ResumeHandler) Remove(ctx context.Context, args *domain.RemoveArgs) (st
 	}
 
 	if multiError.HasError() {
-		return "", multiError
+		return "", customerror.New("failed", multiError)
 	}
 
 	return "Success", nil
