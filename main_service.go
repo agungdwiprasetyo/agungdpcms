@@ -1,8 +1,6 @@
 package main
 
 import (
-	"time"
-
 	"github.com/agungdwiprasetyo/agungdpcms/config"
 	"github.com/agungdwiprasetyo/agungdpcms/middleware"
 	jwtToken "github.com/agungdwiprasetyo/agungdpcms/shared/token"
@@ -36,7 +34,7 @@ type handler struct {
 func newService(conf *config.Config) *service {
 	// init middleware
 	// midd := middleware.NewBasicAuth(conf)
-	token := jwtToken.New(conf.PrivateKey, conf.PublicKey, 24*time.Hour)
+	token := jwtToken.New(conf.PrivateKey, conf.PublicKey, conf.Env.TokenAge)
 	midd := middleware.NewBearer(conf, token)
 
 	// init master module

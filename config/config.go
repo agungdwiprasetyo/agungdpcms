@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/agungdwiprasetyo/agungdpcms/config/database"
 	"github.com/agungdwiprasetyo/agungdpcms/config/key"
@@ -23,6 +24,7 @@ type Config struct {
 		CORSWhitelist string
 		Username      string
 		Password      string
+		TokenAge      time.Duration
 	}
 }
 
@@ -47,6 +49,11 @@ func Init() *Config {
 		conf.Env.CORSWhitelist = v
 	} else {
 		conf.Env.CORSWhitelist = "*"
+	}
+
+	conf.Env.TokenAge, err = time.ParseDuration(os.Getenv("TOKEN_AGE"))
+	if err != nil {
+		panic(err)
 	}
 
 	return conf
