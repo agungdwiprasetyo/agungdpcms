@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/agungdpcms/shared/filter"
+	"github.com/agungdwiprasetyo/agungdpcms/src/master/domain"
 	"github.com/jinzhu/gorm"
 )
 
@@ -10,6 +11,10 @@ type (
 	// Language repo abstraction
 	Language interface {
 		FindAll(*filter.Filter) <-chan shared.Result
+		FindByType(string) <-chan shared.Result
+		FindByID(int) <-chan shared.Result
+		Save(*domain.Language) <-chan shared.Result
+		Remove(*domain.Language) <-chan shared.Result
 	}
 )
 
