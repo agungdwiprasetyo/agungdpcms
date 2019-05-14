@@ -22,28 +22,28 @@ type (
 
 	// Profile abstraction
 	Profile interface {
-		FindByResumeID(resumeID int) shared.Result
+		FindByResumeID(resumeID int) <-chan *domain.Profile
 		Save(data *domain.Profile) shared.Result
 		Remove(data *domain.Profile) shared.Result
 	}
 
 	// Achievement abstraction
 	Achievement interface {
-		FindByResumeID(resumeID int) shared.Result
+		FindByResumeID(resumeID int) <-chan []*domain.Achievement
 		Save(data *domain.Achievement) shared.Result
 		Remove(data *domain.Achievement) shared.Result
 	}
 
 	// Experience abstraction
 	Experience interface {
-		FindByResumeID(resumeID int) shared.Result
+		FindByResumeID(resumeID int) <-chan []*domain.Experience
 		Save(data *domain.Experience) shared.Result
 		Remove(data *domain.Experience) shared.Result
 	}
 
 	// Skill abstraction
 	Skill interface {
-		FindByResumeID(resumeID int) shared.Result
+		FindByResumeID(resumeID int) <-chan []*domain.Skill
 		Save(data *domain.Skill) shared.Result
 		Remove(data *domain.Skill) shared.Result
 	}

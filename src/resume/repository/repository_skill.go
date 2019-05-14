@@ -17,16 +17,20 @@ func NewSkillRepository(db *gorm.DB) Skill {
 	return &skillRepo{db}
 }
 
-func (r *skillRepo) FindByResumeID(resumeID int) (res shared.Result) {
-	var skills []*domain.Skill
+func (r *skillRepo) FindByResumeID(resumeID int) <-chan []*domain.Skill {
+	output := make(chan []*domain.Skill)
 
-	if err := r.db.Where(domain.Skill{ResumeID: resumeID}).Find(&skills).Error; err != nil {
-		res.Error = err
-		return
-	}
+	go func() {
+		defer close(output)
 
-	res.Data = skills
-	return
+		var skills []*domain.Skill
+		if err := r.db.Where(domain.Skill{ResumeID: resumeID}).Find(&skills).Error; err != nil {
+			panic(err)
+		}
+		output <- skills
+	}()
+
+	return output
 }
 
 func (r *skillRepo) Save(data *domain.Skill) shared.Result {

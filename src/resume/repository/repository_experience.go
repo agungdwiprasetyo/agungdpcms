@@ -17,14 +17,20 @@ func NewExperienceRepository(db *gorm.DB) Experience {
 	return &experienceRepo{db}
 }
 
-func (r *experienceRepo) FindByResumeID(resumeID int) (res shared.Result) {
-	var experiences []*domain.Experience
-	if err := r.db.Where(domain.Experience{ResumeID: resumeID}).Find(&experiences).Error; err != nil {
-		res.Error = err
-		return
-	}
-	res.Data = experiences
-	return
+func (r *experienceRepo) FindByResumeID(resumeID int) <-chan []*domain.Experience {
+	output := make(chan []*domain.Experience)
+
+	go func() {
+		defer close(output)
+
+		var experiences []*domain.Experience
+		if err := r.db.Where(domain.Experience{ResumeID: resumeID}).Find(&experiences).Error; err != nil {
+			panic(err)
+		}
+		output <- experiences
+	}()
+
+	return output
 }
 
 func (r *experienceRepo) Save(data *domain.Experience) (res shared.Result) {

@@ -17,14 +17,20 @@ func NewProfileRepository(db *gorm.DB) Profile {
 	return &profileRepo{db}
 }
 
-func (r *profileRepo) FindByResumeID(resumeID int) (res shared.Result) {
-	var profile domain.Profile
-	if err := r.db.Where(domain.Profile{ResumeID: resumeID}).Find(&profile).Error; err != nil {
-		res.Error = err
-		return
-	}
-	res.Data = &profile
-	return
+func (r *profileRepo) FindByResumeID(resumeID int) <-chan *domain.Profile {
+	output := make(chan *domain.Profile)
+
+	go func() {
+		defer close(output)
+
+		var profile domain.Profile
+		if err := r.db.Where(domain.Profile{ResumeID: resumeID}).Find(&profile).Error; err != nil {
+			panic(err)
+		}
+		output <- &profile
+	}()
+
+	return output
 }
 
 func (r *profileRepo) Save(data *domain.Profile) (res shared.Result) {

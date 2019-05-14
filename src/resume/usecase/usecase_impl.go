@@ -55,67 +55,21 @@ func (uc *resumeUc) FindBySlug(slug string) shared.Result {
 	data := new(serializer.ResumeSchema)
 	data.Resume = resume
 
-	profileChan := make(chan *serializer.ProfileSchema)
-	achChan := make(chan []*serializer.AchievementSchema)
-	expChan := make(chan []*serializer.ExperienceSchema)
-	skillChan := make(chan []*serializer.SkillSchema)
+	profileChan := uc.repo.Profile.FindByResumeID(resume.ID)
+	achChan := uc.repo.Achievement.FindByResumeID(resume.ID)
+	expChan := uc.repo.Experience.FindByResumeID(resume.ID)
+	skillChan := uc.repo.Skill.FindByResumeID(resume.ID)
 
-	go func() {
-		defer close(profileChan)
-
-		result := uc.repo.Profile.FindByResumeID(resume.ID)
-		if result.Error != nil {
-			profileChan <- nil
-			return
-		}
-
-		profile := result.Data.(*domain.Profile)
-		profileChan <- &serializer.ProfileSchema{Profile: profile}
-	}()
-
-	go func() {
-		result := uc.repo.Achievement.FindByResumeID(resume.ID)
-		if result.Error != nil {
-			return
-		}
-
-		var achievements []*serializer.AchievementSchema
-		for _, ach := range result.Data.([]*domain.Achievement) {
-			achievements = append(achievements, &serializer.AchievementSchema{Achievement: ach})
-		}
-		achChan <- achievements
-	}()
-
-	go func() {
-		result = uc.repo.Experience.FindByResumeID(resume.ID)
-		if result.Error != nil {
-			return
-		}
-
-		var experiences []*serializer.ExperienceSchema
-		for _, exp := range result.Data.([]*domain.Experience) {
-			experiences = append(experiences, &serializer.ExperienceSchema{Experience: exp})
-		}
-		expChan <- experiences
-	}()
-
-	go func() {
-		result = uc.repo.Skill.FindByResumeID(resume.ID)
-		if result.Error != nil {
-			return
-		}
-
-		var skills []*serializer.SkillSchema
-		for _, skill := range result.Data.([]*domain.Skill) {
-			skills = append(skills, &serializer.SkillSchema{Skill: skill})
-		}
-		skillChan <- skills
-	}()
-
-	data.ProfileSchema = <-profileChan
-	data.AchievementList = <-achChan
-	data.ExperienceList = <-expChan
-	data.SkillList = <-skillChan
+	data.ProfileSchema = &serializer.ProfileSchema{Profile: <-profileChan}
+	for _, ach := range <-achChan {
+		data.AchievementList = append(data.AchievementList, &serializer.AchievementSchema{Achievement: ach})
+	}
+	for _, exp := range <-expChan {
+		data.ExperienceList = append(data.ExperienceList, &serializer.ExperienceSchema{Experience: exp})
+	}
+	for _, skill := range <-skillChan {
+		data.SkillList = append(data.SkillList, &serializer.SkillSchema{Skill: skill})
+	}
 
 	return shared.Result{Data: data}
 }
