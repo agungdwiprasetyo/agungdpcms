@@ -7,6 +7,7 @@ import (
 	"reflect"
 
 	"github.com/agungdwiprasetyo/agungdpcms/shared/filter"
+	"github.com/agungdwiprasetyo/agungdpcms/shared/validator"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/agungdwiprasetyo/go-utils"
 	"github.com/xeipuuv/gojsonschema"
@@ -19,7 +20,7 @@ type Validator struct {
 }
 
 // New validator constructor, only once to read file *.json when init application
-func New() *Validator {
+func New() validator.Validator {
 	s, err := ioutil.ReadFile(fmt.Sprintf("%s/src/resume/validation/resume.json", os.Getenv("APP_PATH")))
 	if err != nil {
 		panic(err)

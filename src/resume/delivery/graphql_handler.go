@@ -3,12 +3,13 @@ package delivery
 import (
 	"context"
 
+	"github.com/agungdwiprasetyo/agungdpcms/shared/validator"
+
 	"github.com/agungdwiprasetyo/agungdpcms/middleware"
 	"github.com/agungdwiprasetyo/agungdpcms/shared/customerror"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/serializer"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/usecase"
-	"github.com/agungdwiprasetyo/agungdpcms/src/resume/validation"
 	"github.com/agungdwiprasetyo/go-utils"
 )
 
@@ -16,15 +17,15 @@ import (
 type GraphQLHandler struct {
 	uc        usecase.Resume
 	midd      middleware.Middleware
-	validator *validation.Validator
+	validator validator.Validator
 }
 
 // NewGraphQLHandler constructor
-func NewGraphQLHandler(uc usecase.Resume, midd middleware.Middleware) *GraphQLHandler {
+func NewGraphQLHandler(uc usecase.Resume, midd middleware.Middleware, v validator.Validator) *GraphQLHandler {
 	return &GraphQLHandler{
 		uc:        uc,
 		midd:      midd,
-		validator: validation.New(),
+		validator: v,
 	}
 }
 
