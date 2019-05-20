@@ -1,10 +1,14 @@
-hash: 4a6dcb4366d04f77ddee7919e925153a973cd6e00862724bb08c67ada126a81c
-updated: 2019-04-29T12:35:28.289583+07:00
+hash: d6e5e2d63e065b2d53180fb6b120b04ea79d64067f63cc7e90368105231eda76
+updated: 2019-05-20T11:13:34.811379+07:00
 imports:
 - name: github.com/agungdwiprasetyo/go-utils
   version: 9c7293a6a4f70d7b31c164265780d8ade79c64c7
   subpackages:
   - debug
+- name: github.com/davecgh/go-spew
+  version: d8f796af33cc11cb798c1aaeb27a4ebc5099927d
+  subpackages:
+  - spew
 - name: github.com/dgrijalva/jwt-go
   version: 06ea1031745cb8b3dab3f6a236daf2b0aa468b7e
 - name: github.com/go-sql-driver/mysql
@@ -12,7 +16,7 @@ imports:
 - name: github.com/gorilla/websocket
   version: 66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d
 - name: github.com/graph-gophers/graphql-go
-  version: 3e8838d4614c12ab337e796548521744f921e05d
+  version: 158e7b876106936762df88b11b595cfe2de738c6
   subpackages:
   - errors
   - internal/common
@@ -27,7 +31,7 @@ imports:
   - log
   - trace
 - name: github.com/jinzhu/gorm
-  version: e3987fd4b803c16497aa4dfd2e75db7a6a061a4e
+  version: b7156195f7f3415f97c20abbd6aff894b847fee8
   subpackages:
   - dialects/postgres
 - name: github.com/jinzhu/inflection
@@ -44,10 +48,21 @@ imports:
   subpackages:
   - ext
   - log
+- name: github.com/pmezard/go-difflib
+  version: 5d4384ee4fb2527b0a1256a821ebfc92f91efefc
+  subpackages:
+  - difflib
+- name: github.com/stretchr/objx
+  version: 35313a95ee26395aa17d366c71a2ccf788fa69b6
+- name: github.com/stretchr/testify
+  version: ffdc059bfe9ce6a4e144ba849dbedead332c6053
+  subpackages:
+  - assert
+  - mock
 - name: github.com/xeipuuv/gojsonpointer
   version: 4e3ac2762d5f479393488629ee9370b50873b3a6
 - name: github.com/xeipuuv/gojsonreference
   version: bd5ef7bd5415a7ac448318e64f11a24cd21e594b
 - name: github.com/xeipuuv/gojsonschema
-  version: da425ebb7609ba06a0f395fc8a254d1c303364a0
+  version: f971f3cd73b2899de6923801c147f075263e0c50
 testImports: []
