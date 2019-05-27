@@ -1,5 +1,5 @@
-hash: d6e5e2d63e065b2d53180fb6b120b04ea79d64067f63cc7e90368105231eda76
-updated: 2019-05-20T11:13:34.811379+07:00
+hash: 3756082148f1a50d33bf0e323531af07dc1d47637dbcb0dbea1ac96386325bc3
+updated: 2019-05-27T10:26:55.827429+07:00
 imports:
 - name: github.com/agungdwiprasetyo/go-utils
   version: 9c7293a6a4f70d7b31c164265780d8ade79c64c7
@@ -55,7 +55,7 @@ imports:
 - name: github.com/stretchr/objx
   version: 35313a95ee26395aa17d366c71a2ccf788fa69b6
 - name: github.com/stretchr/testify
-  version: ffdc059bfe9ce6a4e144ba849dbedead332c6053
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
   subpackages:
   - assert
   - mock
@@ -65,4 +65,6 @@ imports:
   version: bd5ef7bd5415a7ac448318e64f11a24cd21e594b
 - name: github.com/xeipuuv/gojsonschema
   version: f971f3cd73b2899de6923801c147f075263e0c50
+- name: gopkg.in/DATA-DOG/go-sqlmock.v1
+  version: 3f9954f6f6697845b082ca57995849ddf614f450
 testImports: []

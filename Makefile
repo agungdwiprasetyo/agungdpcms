@@ -1,6 +1,7 @@
 .PHONY : build run test cover
 
-TEST_PACKAGES = ./src/resume/delivery
+TEST_PACKAGES = ./src/resume/delivery \
+				./src/resume/repository
 
 build:
 	go build -o bin
