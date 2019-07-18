@@ -1,24 +1,13 @@
 language: go
 sudo: required
 go:
-  - 1.11.x
-
-addons:
-  apt:
-    sources:
-    - sourceline: ppa:masterminds/glide
-    packages:
-    - glide
-
-before_install:
-  - export PATH=$PATH:$HOME/.local/bin
-
-install:
-  - glide install
-
+  - 1.12.x
+env:
+  global:
+    - GO111MODULE=on
+install: true
 script:
   - make test
   - make cover
-
 after_success:
   - bash <(curl -s https://codecov.io/bash)
