@@ -7,3 +7,5 @@ rundev
 deploy
 static/ws
 static/voyager/*
+coverage.txt
+.vscode

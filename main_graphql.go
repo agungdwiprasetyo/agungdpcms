@@ -15,18 +15,18 @@ import (
 	"github.com/graph-gophers/graphql-go"
 )
 
-type customHandler struct {
+type graphqlHandler struct {
 	schema *graphql.Schema
 	conf   *config.Config
 }
 
-func newCustomHandler(schema *graphql.Schema, conf *config.Config) *customHandler {
-	return &customHandler{
+func newGraphQLHandler(schema *graphql.Schema, conf *config.Config) *graphqlHandler {
+	return &graphqlHandler{
 		schema: schema, conf: conf,
 	}
 }
 
-func (h *customHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *graphqlHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// handle cors
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
