@@ -1,25 +1,29 @@
-.PHONY : build run test cover
+.PHONY : build run test
 
-TEST_PACKAGES = ./src/resume/delivery \
-				./src/resume/repository
+PACKAGES = $(shell go list ./... | grep -v -e . | tr '\n' ',')
+PATH_KEY = config/key/
+PRIVATE_KEY = private.key
+PUBLIC_KEY = public.pem
+
+prepare:
+	if ! [ -f .env ]; then cp env.example .env; fi;
+	if ! [ -f $(PATH_KEY)$(PRIVATE_KEY) ]; then \
+		./config/key/generate.sh 12345; \
+		mv $(PRIVATE_KEY) $(PATH_KEY); \
+		mv $(PUBLIC_KEY) $(PATH_KEY); \
+	fi;
 
 build:
 	go build -o bin
 
-run: build
+run: prepare build
 	./bin
 
-docker:
-	if ! [ -f .env ]; then cp env.example .env; fi;
+docker: prepare
 	docker build -t agungdpcms:latest .
 
 test:
-	$(foreach pkg, $(TEST_PACKAGES),\
-	go test $(pkg);)
-
-cover:
 	if [ -f coverage.txt ]; then rm coverage.txt; fi;
-	$(foreach pkg, $(TEST_PACKAGES), \
-	go test -coverprofile=coverage.out -covermode=atomic $(pkg); \
-	tail -n +2 coverage.out >> coverage.txt;)
-	rm coverage.out
+	@echo ">> running unit test and calculate coverage"
+	@go test ./... -cover -coverprofile=coverage.txt -covermode=set -coverpkg=$(PACKAGES)
+	@go tool cover -func=coverage.txt
