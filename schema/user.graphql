@@ -1,0 +1,16 @@
+################### User Module Area
+type UserModule {
+    login(username: String!, password: String!): User
+}
+type User {
+    id: Int!
+    username: String!
+    password: String!
+    name: String!
+    token: String!
+}
+type Role {
+    id: Int!
+    slug: String!
+    name: String!
+}

@@ -1,0 +1,19 @@
+################### Chat Module Area
+type ChatModule {
+    getAllMessage(groupId: Int!, page: Int!, limit: Int!): ChatMessages
+}
+type ChatGroup {
+    id: Int!
+    name: String!
+}
+type ChatMessage {
+    id: Int!
+    clientId: String!
+    event: String!
+    title: String!
+    content: String!
+}
+type ChatMessages {
+    meta: Meta!
+    data: [ChatMessage]!
+}
