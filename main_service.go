@@ -5,30 +5,24 @@ import (
 	"github.com/agungdwiprasetyo/agungdpcms/middleware"
 	jwtToken "github.com/agungdwiprasetyo/agungdpcms/shared/token"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat"
-	cd "github.com/agungdwiprasetyo/agungdpcms/src/chat/delivery"
 	"github.com/agungdwiprasetyo/agungdpcms/src/master"
-	md "github.com/agungdwiprasetyo/agungdpcms/src/master/delivery"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume"
-	rd "github.com/agungdwiprasetyo/agungdpcms/src/resume/delivery"
 	"github.com/agungdwiprasetyo/agungdpcms/src/user"
-	ud "github.com/agungdwiprasetyo/agungdpcms/src/user/delivery"
 	"github.com/agungdwiprasetyo/agungdpcms/websocket"
 )
 
 type service struct {
-	conf      *config.Config
-	handler   *handler
+	conf *config.Config
+
+	graphql struct {
+		resolver *graphqlResolver
+		handler  *graphqlHandler
+	}
+
 	websocket struct {
 		server  *websocket.Server
-		handler *cd.WsHandler
+		handler *websocket.Handler
 	}
-}
-
-type handler struct {
-	Resume *rd.GraphQLHandler
-	Chat   *cd.GraphQLHandler
-	User   *ud.GraphQLHandler
-	Master *md.GraphQLHandler
 }
 
 func newService(conf *config.Config) *service {
@@ -36,6 +30,7 @@ func newService(conf *config.Config) *service {
 	// midd := middleware.NewBasicAuth(conf)
 	token := jwtToken.New(conf.PrivateKey, conf.PublicKey, conf.Env.TokenAge)
 	midd := middleware.NewBearer(conf, token)
+	wsServer := websocket.NewServer(&conf.Env)
 
 	// init master module
 	masterModule := master.New(conf, midd)
@@ -46,16 +41,19 @@ func newService(conf *config.Config) *service {
 	// init chat module
 	chatModule := chat.New(conf, midd)
 
-	srv := new(service)
-	srv.conf = conf
-	srv.websocket.server = websocket.NewServer()
-	srv.websocket.handler = cd.NewWebsocketHandler(srv.websocket.server, chatModule.Usecase)
-	srv.handler = &handler{
+	gqlResolver := &graphqlResolver{
 		Resume: resumeModule.Handler,
 		Chat:   chatModule.Handler,
 		User:   userModule.Handler,
 		Master: masterModule.Handler,
 	}
+
+	srv := new(service)
+	srv.conf = conf
+	srv.websocket.server = wsServer
+	srv.websocket.handler = websocket.NewWebsocketHandler(wsServer, chatModule.Usecase)
+	srv.graphql.resolver = gqlResolver
+	srv.graphql.handler = newGraphQLHandler(&conf.Env, gqlResolver)
 
 	return srv
 }

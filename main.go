@@ -12,7 +12,7 @@ import (
 	env "github.com/joho/godotenv"
 )
 
-func main() {
+func init() {
 	appPath, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		log.Fatal(err)
@@ -22,9 +22,11 @@ func main() {
 	if err := env.Load(fmt.Sprintf("%s/.env", appPath)); err != nil {
 		log.Fatal(err)
 	}
+}
 
-	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, os.Interrupt)
+func main() {
+	interrupted := make(chan os.Signal, 1)
+	signal.Notify(interrupted, os.Interrupt)
 
 	conf := config.Init()
 	s := newService(conf)
@@ -48,7 +50,7 @@ func main() {
 		defer wg.Done()
 		for {
 			select {
-			case <-sig:
+			case <-interrupted:
 				conf.Release()
 				os.Exit(0)
 			}

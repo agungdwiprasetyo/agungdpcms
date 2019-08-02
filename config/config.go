@@ -19,13 +19,17 @@ type Config struct {
 	PrivateKey *rsa.PrivateKey
 	PublicKey  *rsa.PublicKey
 
-	Env struct {
-		HTTPPort      int
-		CORSWhitelist string
-		Username      string
-		Password      string
-		TokenAge      time.Duration
-	}
+	Env Environment
+}
+
+// Environment model
+type Environment struct {
+	HTTPPort      int
+	CORSWhitelist string
+	Username      string
+	Password      string
+	TokenAge      time.Duration
+	Websocket     bool
 }
 
 // Init global config
@@ -55,6 +59,8 @@ func Init() *Config {
 	if err != nil {
 		panic(err)
 	}
+
+	conf.Env.Websocket, _ = strconv.ParseBool(os.Getenv("WEBSOCKET"))
 
 	return conf
 }

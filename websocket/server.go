@@ -6,12 +6,14 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/agungdwiprasetyo/agungdpcms/config"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/domain"
 	"github.com/gorilla/websocket"
 )
 
 // Server for websocket
 type Server struct {
+	env                 *config.Environment
 	Clients             map[string]*Client
 	Message             chan []byte
 	Connect, Disconnect chan *Client
@@ -20,8 +22,9 @@ type Server struct {
 }
 
 // NewServer init new websocket server
-func NewServer() *Server {
+func NewServer(env *config.Environment) *Server {
 	server := new(Server)
+	server.env = env
 	server.Clients = make(map[string]*Client)
 	server.Connect = make(chan *Client)
 	server.Disconnect = make(chan *Client)
@@ -37,6 +40,9 @@ func NewServer() *Server {
 
 // ListenAndServe start serve client
 func (s *Server) ListenAndServe() {
+	if !s.env.Websocket {
+		return
+	}
 	log.Println("Websocket server up and running in path /ws")
 
 	for {

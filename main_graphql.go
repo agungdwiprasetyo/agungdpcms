@@ -11,18 +11,32 @@ import (
 	"net/http"
 
 	"github.com/agungdwiprasetyo/agungdpcms/config"
+	"github.com/agungdwiprasetyo/agungdpcms/schema"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
+	cd "github.com/agungdwiprasetyo/agungdpcms/src/chat/delivery"
+	md "github.com/agungdwiprasetyo/agungdpcms/src/master/delivery"
+	rd "github.com/agungdwiprasetyo/agungdpcms/src/resume/delivery"
+	ud "github.com/agungdwiprasetyo/agungdpcms/src/user/delivery"
 	"github.com/graph-gophers/graphql-go"
 )
 
-type graphqlHandler struct {
-	schema *graphql.Schema
-	conf   *config.Config
+type graphqlResolver struct {
+	Resume *rd.GraphQLHandler
+	Chat   *cd.GraphQLHandler
+	User   *ud.GraphQLHandler
+	Master *md.GraphQLHandler
 }
 
-func newGraphQLHandler(schema *graphql.Schema, conf *config.Config) *graphqlHandler {
+type graphqlHandler struct {
+	schema *graphql.Schema
+	env    *config.Environment
+}
+
+func newGraphQLHandler(env *config.Environment, resolver *graphqlResolver) *graphqlHandler {
+	gqlSchema := schema.LoadSchema()
 	return &graphqlHandler{
-		schema: schema, conf: conf,
+		schema: graphql.MustParseSchema(gqlSchema, resolver, graphql.UseStringDescriptions(), graphql.UseFieldResolvers()),
+		env:    env,
 	}
 }
 
@@ -30,7 +44,7 @@ func (h *graphqlHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// handle cors
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Access-Control-Allow-Origin", h.conf.Env.CORSWhitelist)
+	w.Header().Set("Access-Control-Allow-Origin", h.env.CORSWhitelist)
 	if r.Method == http.MethodOptions {
 		return
 	}
