@@ -6,7 +6,13 @@
 
 [![Coverage Graph](https://codecov.io/gh/agungdwiprasetyo/agungdpcms/branch/master/graphs/commits.svg)](https://codecov.io/gh/agungdwiprasetyo/agungdpcms)
 
-My CMS Backend
+## My CMS Service
+
+<p align="center">
+  <img src="https://storage.googleapis.com/agungdp/static/logo/golang.png" width="100" alt="golang logo" />
+  <img src="https://storage.googleapis.com/agungdp/static/logo/graphql.png" width="100" alt="graphql logo" />
+</p>
+
 
 Modules
 * Chat
