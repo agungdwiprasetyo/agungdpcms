@@ -13,6 +13,7 @@ type resumeRepo struct {
 
 // NewResumeRepository construct new resume repo
 func NewResumeRepository(db *gorm.DB) Resume {
+	db.AutoMigrate(&domain.Resume{})
 	return &resumeRepo{db}
 }
 

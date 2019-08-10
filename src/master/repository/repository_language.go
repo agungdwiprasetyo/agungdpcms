@@ -15,6 +15,7 @@ type languageGorm struct {
 
 // NewLanguageRepo init master language repo
 func NewLanguageRepo(db *gorm.DB) Language {
+	db.AutoMigrate(&domain.Language{})
 	return &languageGorm{db}
 }
 

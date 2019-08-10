@@ -14,6 +14,7 @@ type skillRepo struct {
 
 // NewSkillRepository construct new resume repo
 func NewSkillRepository(db *gorm.DB) Skill {
+	db.AutoMigrate(&domain.Skill{})
 	return &skillRepo{db}
 }
 

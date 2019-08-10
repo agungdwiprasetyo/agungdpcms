@@ -14,6 +14,7 @@ type profileRepo struct {
 
 // NewProfileRepository construct new profile repo
 func NewProfileRepository(db *gorm.DB) Profile {
+	db.AutoMigrate(&domain.Profile{})
 	return &profileRepo{db}
 }
 

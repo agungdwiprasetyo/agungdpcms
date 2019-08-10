@@ -12,6 +12,7 @@ type chatGorm struct {
 
 // NewChatRepo gorm
 func NewChatRepo(db *gorm.DB) Chat {
+	db.AutoMigrate(&domain.Group{}, &domain.Message{})
 	return &chatGorm{db}
 }
 

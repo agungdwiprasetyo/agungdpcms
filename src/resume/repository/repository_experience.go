@@ -14,6 +14,7 @@ type experienceRepo struct {
 
 // NewExperienceRepository construct new resume repo
 func NewExperienceRepository(db *gorm.DB) Experience {
+	db.AutoMigrate(&domain.Experience{})
 	return &experienceRepo{db}
 }
 

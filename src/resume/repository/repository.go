@@ -3,9 +3,8 @@ package repository
 import (
 	"fmt"
 
-	"github.com/agungdwiprasetyo/agungdpcms/shared/filter"
-
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/shared/filter"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/jinzhu/gorm"
 )

@@ -6,10 +6,6 @@ import (
 	"os"
 	"strconv"
 
-	cd "github.com/agungdwiprasetyo/agungdpcms/src/chat/domain"
-	md "github.com/agungdwiprasetyo/agungdpcms/src/master/domain"
-	rd "github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
-	ud "github.com/agungdwiprasetyo/agungdpcms/src/user/domain"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -34,11 +30,6 @@ func LoadDatabaseConnection() *gorm.DB {
 
 	isDebugMode, _ := strconv.ParseBool(os.Getenv("DEBUG_MODE"))
 	db.LogMode(isDebugMode)
-
-	db.AutoMigrate(&md.Language{})
-	db.AutoMigrate(&rd.Resume{}, &rd.Achievement{}, &rd.Education{}, &rd.Experience{}, &rd.Skill{}, &rd.Profile{}, &rd.Project{})
-	db.AutoMigrate(&cd.Group{}, &cd.Message{})
-	db.AutoMigrate(&ud.User{}, &ud.Role{})
 
 	log.Println("Success connect to database")
 

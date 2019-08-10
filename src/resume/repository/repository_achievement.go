@@ -14,6 +14,7 @@ type achievementRepo struct {
 
 // NewAchievementRepository construct new resume repo
 func NewAchievementRepository(db *gorm.DB) Achievement {
+	db.AutoMigrate(&domain.Achievement{})
 	return &achievementRepo{db}
 }
 

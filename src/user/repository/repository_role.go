@@ -12,6 +12,7 @@ type roleGorm struct {
 
 // NewRoleRepository construct role repo
 func NewRoleRepository(db *gorm.DB) Role {
+	db.AutoMigrate(&domain.Role{})
 	return &roleGorm{db}
 }
 

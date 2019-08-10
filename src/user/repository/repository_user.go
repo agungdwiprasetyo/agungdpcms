@@ -12,6 +12,7 @@ type userGorm struct {
 
 // NewUserRepository construct user repo
 func NewUserRepository(db *gorm.DB) User {
+	db.AutoMigrate(&domain.User{})
 	return &userGorm{db}
 }
 
