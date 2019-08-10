@@ -19,7 +19,7 @@ func Test_experienceRepo_FindByResumeID(t *testing.T) {
 		mock.Mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "resume_experiences" WHERE ("resume_experiences"."resume_id" = $1)`)).
 			WillReturnRows(sqlmock.NewRows([]string{"id", "resume_id"}).AddRow(1, 10))
 
-		repo := NewExperienceRepository(mock.DB)
+		repo := &experienceRepo{mock.DB}
 		result := <-repo.FindByResumeID(10)
 		assert.NotNil(t, result)
 	})
@@ -33,7 +33,7 @@ func Test_experienceRepo_Save(t *testing.T) {
 		mock.Mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "resume_experiences" ORDER BY "resume_experiences"."id" ASC LIMIT 1`)).
 			WillReturnRows(sqlmock.NewRows([]string{"id", "resume_id"}).AddRow(1, 10))
 
-		repo := NewExperienceRepository(mock.DB)
+		repo := &experienceRepo{mock.DB}
 		result := repo.Save(&domain.Experience{})
 		assert.NoError(t, result.Error)
 	})
@@ -44,7 +44,7 @@ func Test_experienceRepo_Save(t *testing.T) {
 		mock.Mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "resume_experiences" ORDER BY "resume_experiences"."id" ASC LIMIT 1`)).
 			WillReturnError(fmt.Errorf("error"))
 
-		repo := NewExperienceRepository(mock.DB)
+		repo := &experienceRepo{mock.DB}
 		result := repo.Save(&domain.Experience{})
 		assert.Error(t, result.Error)
 	})
@@ -58,7 +58,7 @@ func Test_experienceRepo_Remove(t *testing.T) {
 		mock.Mock.ExpectExec(regexp.QuoteMeta(`DELETE FROM "resume_experiences" WHERE "resume_experiences"."id" = $1`)).
 			WithArgs(1).WillReturnResult(sqlmock.NewResult(1, 1))
 
-		repo := NewExperienceRepository(mock.DB)
+		repo := &experienceRepo{mock.DB}
 		result := repo.Remove(&domain.Experience{ID: 1})
 		assert.NoError(t, result.Error)
 	})
@@ -69,7 +69,7 @@ func Test_experienceRepo_Remove(t *testing.T) {
 		mock.Mock.ExpectExec(regexp.QuoteMeta(`DELETE FROM "resume_experiences" WHERE "resume_experiences"."id" = $1`)).
 			WithArgs(1).WillReturnError(fmt.Errorf("error"))
 
-		repo := NewExperienceRepository(mock.DB)
+		repo := &experienceRepo{mock.DB}
 		result := repo.Remove(&domain.Experience{ID: 1})
 		assert.Error(t, result.Error)
 	})

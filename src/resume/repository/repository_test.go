@@ -11,6 +11,7 @@ import (
 func TestRepository_WithTransaction(t *testing.T) {
 	t.Run("Test Start Transaction (Panic recovered)", func(t *testing.T) {
 		mock := mocking.New()
+		mock.Mock.ExpectBegin()
 		defer mock.Close()
 
 		repo := NewRepository(mock.DB)
@@ -22,9 +23,11 @@ func TestRepository_WithTransaction(t *testing.T) {
 	})
 	t.Run("Test error happened when transaction", func(t *testing.T) {
 		mock := mocking.New()
+		mock.Mock.ExpectBegin()
 		defer mock.Close()
 
 		repo := NewRepository(mock.DB)
+		mock.Mock.ExpectRollback()
 		err := repo.WithTransaction(func(repo *Repository) error {
 			return fmt.Errorf("error")
 		})
@@ -32,9 +35,11 @@ func TestRepository_WithTransaction(t *testing.T) {
 	})
 	t.Run("Test positive transaction", func(t *testing.T) {
 		mock := mocking.New()
+		mock.Mock.ExpectBegin()
 		defer mock.Close()
 
 		repo := NewRepository(mock.DB)
+		mock.Mock.ExpectCommit()
 		err := repo.WithTransaction(func(repo *Repository) error {
 			return nil
 		})
