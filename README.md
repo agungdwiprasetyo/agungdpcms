@@ -15,10 +15,26 @@
   <img src="https://storage.googleapis.com/agungdp/static/logo/graphql.png" width="100" alt="graphql logo" />
 </p>
 
+### Use
+* Install latest Golang
 
-Modules
-* Chat
-* Resume
-* User
+```sh
+$ brew install golang
+```
+
+* Build
+```sh
+$ make build
+```
+
+* Run unit test
+```sh
+$ make test
+```
+
+* Dockerize
+```sh
+$ make docker
+```
 
 Open voyager -> https://api.agungdwiprasetyo.com/cms/voyager
