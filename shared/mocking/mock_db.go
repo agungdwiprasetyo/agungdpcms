@@ -2,10 +2,14 @@ package mocking
 
 import (
 	"database/sql"
+	"sync"
 
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
+
+var lock sync.Mutex
 
 // MockDB model
 type MockDB struct {
@@ -16,6 +20,8 @@ type MockDB struct {
 
 // New construct db mocking
 func New() *MockDB {
+	lock.Lock()
+	defer lock.Unlock()
 	db, mock, err := sqlmock.New()
 	gormDB, err := gorm.Open("postgres", db)
 	if err != nil {
@@ -28,6 +34,8 @@ func New() *MockDB {
 
 // Close open db
 func (m *MockDB) Close() {
+	lock.Lock()
+	defer lock.Unlock()
 	m.db.Close()
 	m.DB.Close()
 }

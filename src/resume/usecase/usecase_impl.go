@@ -6,12 +6,11 @@ import (
 	"github.com/agungdwiprasetyo/agungdpcms/shared/meta"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/repository"
-	rr "github.com/agungdwiprasetyo/agungdpcms/src/resume/repository"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/serializer"
 )
 
 type resumeUc struct {
-	repo *rr.Repository
+	repo *repository.Repository
 }
 
 // NewResumeUsecase constructor
@@ -44,7 +43,7 @@ func (uc *resumeUc) FindAll(filter *filter.Filter) shared.Result {
 	}}
 }
 
-func (uc *resumeUc) FindBySlug(slug string) shared.Result {
+func (uc *resumeUc) FindBySlug(slug string) (res shared.Result) {
 	result := uc.repo.Resume.FindBySlug(slug)
 	if result.Error != nil {
 		return result
@@ -75,7 +74,7 @@ func (uc *resumeUc) FindBySlug(slug string) shared.Result {
 }
 
 func (uc *resumeUc) Save(data *domain.Resume) (res shared.Result) {
-	err := uc.repo.WithTransaction(func(repo *rr.Repository) error {
+	err := uc.repo.WithTransaction(func(repo *repository.Repository) error {
 		achievements, experiences, skills := data.Achievements, data.Experiences, data.Skills
 		profile := data.Profile
 		data.EmptyChild()

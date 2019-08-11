@@ -55,8 +55,10 @@ func Test_skillRepo_Remove(t *testing.T) {
 		mock := mocking.New()
 		defer mock.Close()
 
+		mock.Mock.ExpectBegin()
 		mock.Mock.ExpectExec(regexp.QuoteMeta(`DELETE FROM "resume_skills"  WHERE "resume_skills"."id" = $1`)).
 			WithArgs(1).WillReturnResult(sqlmock.NewResult(1, 1))
+		mock.Mock.ExpectCommit()
 
 		repo := &skillRepo{mock.DB}
 		result := repo.Remove(&domain.Skill{ID: 1})
@@ -66,8 +68,10 @@ func Test_skillRepo_Remove(t *testing.T) {
 		mock := mocking.New()
 		defer mock.Close()
 
+		mock.Mock.ExpectBegin()
 		mock.Mock.ExpectExec(regexp.QuoteMeta(`DELETE FROM "resume_skills"  WHERE "resume_skills"."id" = $1`)).
 			WithArgs(1).WillReturnError(fmt.Errorf("error"))
+		mock.Mock.ExpectRollback()
 
 		repo := &skillRepo{mock.DB}
 		result := repo.Remove(&domain.Skill{ID: 1})
