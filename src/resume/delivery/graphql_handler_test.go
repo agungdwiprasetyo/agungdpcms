@@ -2,16 +2,17 @@ package delivery
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"testing"
 
+	"bou.ke/monkey"
 	middMocks "github.com/agungdwiprasetyo/agungdpcms/middleware/mocks"
+	"github.com/agungdwiprasetyo/agungdpcms/schema/jsonschema"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
-	validatorMocks "github.com/agungdwiprasetyo/agungdpcms/shared/validator/mocks"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/serializer"
 	ucMocks "github.com/agungdwiprasetyo/agungdpcms/src/resume/usecase/mocks"
-	"github.com/agungdwiprasetyo/go-utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -22,11 +23,11 @@ func TestGraphQLHandler_GetAllResume(t *testing.T) {
 		args *domain.GetAllResumeArgs
 	}
 	tests := []struct {
-		name           string
-		args           args
-		wantValidation *utils.MultiError
-		wantUsecase    shared.Result
-		wantErr        bool
+		name              string
+		args              args
+		wantUsecase       shared.Result
+		wantErrValidation error
+		wantErr           bool
 	}{
 		{
 			name:        "Testcase #1: Positive",
@@ -34,11 +35,10 @@ func TestGraphQLHandler_GetAllResume(t *testing.T) {
 			wantUsecase: shared.Result{Data: &serializer.ResumeListSchema{}},
 		},
 		{
-			name:           "Testcase #2: Negative, error validation",
-			args:           args{ctx: context.Background(), args: &domain.GetAllResumeArgs{}},
-			wantValidation: utils.NewMultiError(),
-			wantUsecase:    shared.Result{Data: &serializer.ResumeListSchema{}},
-			wantErr:        true,
+			name:              "Testcase #2: Negative, error validation",
+			args:              args{ctx: context.Background(), args: &domain.GetAllResumeArgs{}},
+			wantErrValidation: errors.New("failed validate"),
+			wantErr:           true,
 		},
 		{
 			name:        "Testcase #3: Negative, error fetch data from usecase",
@@ -55,10 +55,14 @@ func TestGraphQLHandler_GetAllResume(t *testing.T) {
 			midd := new(middMocks.Middleware)
 			midd.On("WithAuth", mock.Anything).Return(tt.args.ctx)
 
-			v := new(validatorMocks.Validator)
-			v.On("Validate", mock.Anything).Return(tt.wantValidation)
+			var guard *monkey.PatchGuard
+			guard = monkey.Patch(jsonschema.Validate, func(id string, input interface{}) (err error) {
+				guard.Unpatch()
+				defer guard.Restore()
+				return tt.wantErrValidation
+			})
 
-			h := NewGraphQLHandler(resumeUsecase, midd, v)
+			h := NewGraphQLHandler(resumeUsecase, midd)
 			got, err := h.GetAllResume(tt.args.ctx, tt.args.args)
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -76,11 +80,10 @@ func TestGraphQLHandler_GetResumeBySlug(t *testing.T) {
 		args *domain.ResumeSlugInput
 	}
 	tests := []struct {
-		name           string
-		args           args
-		wantValidation *utils.MultiError
-		wantUsecase    shared.Result
-		wantErr        bool
+		name        string
+		args        args
+		wantUsecase shared.Result
+		wantErr     bool
 	}{
 		{
 			name:        "Testcase #1: Positive",
@@ -100,9 +103,8 @@ func TestGraphQLHandler_GetResumeBySlug(t *testing.T) {
 			resumeUsecase.On("FindBySlug", mock.Anything).Return(tt.wantUsecase)
 
 			midd := new(middMocks.Middleware)
-			v := new(validatorMocks.Validator)
 
-			h := NewGraphQLHandler(resumeUsecase, midd, v)
+			h := NewGraphQLHandler(resumeUsecase, midd)
 			got, err := h.GetResumeBySlug(tt.args.ctx, tt.args.args)
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -120,11 +122,11 @@ func TestGraphQLHandler_CreateResume(t *testing.T) {
 		args *serializer.ResumeSchema
 	}
 	tests := []struct {
-		name           string
-		args           args
-		wantValidation *utils.MultiError
-		wantUsecase    shared.Result
-		wantErr        bool
+		name              string
+		args              args
+		wantErrValidation error
+		wantUsecase       shared.Result
+		wantErr           bool
 	}{
 		{
 			name:        "Testcase #1: Positive",
@@ -132,11 +134,11 @@ func TestGraphQLHandler_CreateResume(t *testing.T) {
 			wantUsecase: shared.Result{Data: &domain.Resume{}},
 		},
 		{
-			name:           "Testcase #2: Negative, error validation",
-			args:           args{ctx: context.Background(), args: &serializer.ResumeSchema{}},
-			wantValidation: utils.NewMultiError(),
-			wantUsecase:    shared.Result{Data: &domain.Resume{}},
-			wantErr:        true,
+			name:              "Testcase #2: Negative, error validation",
+			args:              args{ctx: context.Background(), args: &serializer.ResumeSchema{}},
+			wantErrValidation: errors.New("failed validate"),
+			wantUsecase:       shared.Result{Data: &domain.Resume{}},
+			wantErr:           true,
 		},
 		{
 			name:        "Testcase #3: Negative, error fetch data from usecase",
@@ -153,10 +155,14 @@ func TestGraphQLHandler_CreateResume(t *testing.T) {
 			midd := new(middMocks.Middleware)
 			midd.On("WithAuth", mock.Anything).Return(tt.args.ctx)
 
-			v := new(validatorMocks.Validator)
-			v.On("Validate", mock.Anything).Return(tt.wantValidation)
+			var guard *monkey.PatchGuard
+			guard = monkey.Patch(jsonschema.Validate, func(id string, input interface{}) error {
+				guard.Unpatch()
+				defer guard.Restore()
+				return tt.wantErrValidation
+			})
 
-			h := NewGraphQLHandler(resumeUsecase, midd, v)
+			h := NewGraphQLHandler(resumeUsecase, midd)
 			got, err := h.CreateResume(tt.args.ctx, tt.args.args)
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -210,9 +216,7 @@ func TestGraphQLHandler_Remove(t *testing.T) {
 			midd := new(middMocks.Middleware)
 			midd.On("WithAuth", mock.Anything).Return(tt.args.ctx)
 
-			v := new(validatorMocks.Validator)
-
-			h := NewGraphQLHandler(resumeUsecase, midd, v)
+			h := NewGraphQLHandler(resumeUsecase, midd)
 			got, err := h.Remove(tt.args.ctx, tt.args.args)
 			if tt.wantErr {
 				assert.Error(t, err)

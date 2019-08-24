@@ -1,8 +1,11 @@
 package main
 
 import (
+	"os"
+
 	"github.com/agungdwiprasetyo/agungdpcms/config"
 	"github.com/agungdwiprasetyo/agungdpcms/middleware"
+	"github.com/agungdwiprasetyo/agungdpcms/schema/jsonschema"
 	jwtToken "github.com/agungdwiprasetyo/agungdpcms/shared/token"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat"
 	"github.com/agungdwiprasetyo/agungdpcms/src/master"
@@ -31,6 +34,11 @@ func newService(conf *config.Config) *service {
 	token := jwtToken.New(conf.PrivateKey, conf.PublicKey, conf.Env.TokenAge)
 	midd := middleware.NewBearer(conf, token)
 	wsServer := websocket.NewServer(&conf.Env)
+
+	// load json schema
+	if err := jsonschema.Load(os.Getenv("APP_PATH") + "/schema/jsonschema/"); err != nil {
+		panic(err)
+	}
 
 	// init master module
 	masterModule := master.New(conf, midd)

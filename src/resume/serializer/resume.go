@@ -3,7 +3,6 @@ package serializer
 import (
 	"github.com/agungdwiprasetyo/agungdpcms/shared/meta"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
-	graphql "github.com/graph-gophers/graphql-go"
 )
 
 type ResumeSchema struct {
@@ -14,8 +13,8 @@ type ResumeSchema struct {
 	SkillList       []*SkillSchema
 }
 
-func (r *ResumeSchema) ID() graphql.ID {
-	return graphql.ID(r.Resume.ID)
+func (r *ResumeSchema) ID() int32 {
+	return int32(r.Resume.ID)
 }
 
 func (r *ResumeSchema) Slug() string {

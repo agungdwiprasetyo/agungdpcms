@@ -3,9 +3,8 @@ package delivery
 import (
 	"context"
 
-	"github.com/agungdwiprasetyo/agungdpcms/shared/validator"
-
 	"github.com/agungdwiprasetyo/agungdpcms/middleware"
+	"github.com/agungdwiprasetyo/agungdpcms/schema/jsonschema"
 	"github.com/agungdwiprasetyo/agungdpcms/shared/customerror"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/domain"
 	"github.com/agungdwiprasetyo/agungdpcms/src/resume/serializer"
@@ -15,25 +14,23 @@ import (
 
 // GraphQLHandler graphql
 type GraphQLHandler struct {
-	uc        usecase.Resume
-	midd      middleware.Middleware
-	validator validator.Validator
+	uc   usecase.Resume
+	midd middleware.Middleware
 }
 
 // NewGraphQLHandler constructor
-func NewGraphQLHandler(uc usecase.Resume, midd middleware.Middleware, v validator.Validator) *GraphQLHandler {
+func NewGraphQLHandler(uc usecase.Resume, midd middleware.Middleware) *GraphQLHandler {
 	return &GraphQLHandler{
-		uc:        uc,
-		midd:      midd,
-		validator: v,
+		uc:   uc,
+		midd: midd,
 	}
 }
 
 // GetAllResume handler
 func (h *GraphQLHandler) GetAllResume(ctx context.Context, args *domain.GetAllResumeArgs) (*serializer.ResumeListSchema, error) {
 	h.midd.WithAuth(ctx)
-	if err := h.validator.Validate(args.Filter); err != nil {
-		return nil, err
+	if err := jsonschema.Validate("resume/filter", args.Filter); err != nil {
+		return nil, customerror.New("failed to validate payload", err)
 	}
 
 	result := h.uc.FindAll(&args.Filter)
@@ -56,7 +53,7 @@ func (h *GraphQLHandler) GetResumeBySlug(ctx context.Context, args *domain.Resum
 // CreateResume handler
 func (h *GraphQLHandler) CreateResume(ctx context.Context, args *serializer.ResumeSchema) (*serializer.ResumeSchema, error) {
 	h.midd.WithAuth(ctx)
-	if err := h.validator.Validate(args.Resume); err != nil {
+	if err := jsonschema.Validate("resume/resume", args.Resume); err != nil {
 		return nil, customerror.New("failed to validate payload", err)
 	}
 

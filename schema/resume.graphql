@@ -9,7 +9,7 @@ type ResumeMutation {
 }
 
 type Resume {
-    id: ID!
+    id: Int!
     slug: String!
     name: String!
     profile: Profile
