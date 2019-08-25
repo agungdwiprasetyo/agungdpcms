@@ -22,7 +22,7 @@ run: prepare build
 docker: prepare
 	docker build -t agungdpcms:latest .
 
-test:
+test: build
 	if [ -f coverage.txt ]; then rm coverage.txt; fi;
 	@echo ">> running unit test and calculate coverage"
 	@go test ./... -cover -coverprofile=coverage.txt -covermode=set -coverpkg=$(PACKAGES)
