@@ -16,6 +16,7 @@ var jsonSchemaList = map[string]*gojsonschema.Schema{}
 
 // Load all schema
 func Load(path string) error {
+	gojsonschema.Locale = &customMessage{}
 	return filepath.Walk(path, func(p string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
