@@ -11,7 +11,7 @@ import (
 	"net/http"
 
 	"github.com/agungdwiprasetyo/agungdpcms/config"
-	"github.com/agungdwiprasetyo/agungdpcms/schema"
+	graphqlschema "github.com/agungdwiprasetyo/agungdpcms/schema/graphql"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	cd "github.com/agungdwiprasetyo/agungdpcms/src/chat/delivery"
 	md "github.com/agungdwiprasetyo/agungdpcms/src/master/delivery"
@@ -33,7 +33,7 @@ type graphqlHandler struct {
 }
 
 func newGraphQLHandler(env *config.Environment, resolver *graphqlResolver) *graphqlHandler {
-	gqlSchema := schema.LoadSchema()
+	gqlSchema := graphqlschema.LoadSchema()
 	return &graphqlHandler{
 		schema: graphql.MustParseSchema(gqlSchema, resolver, graphql.UseStringDescriptions(), graphql.UseFieldResolvers()),
 		env:    env,
