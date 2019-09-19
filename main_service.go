@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"os"
 
 	"github.com/agungdwiprasetyo/agungdpcms/config"
@@ -15,7 +16,8 @@ import (
 )
 
 type service struct {
-	conf *config.Config
+	conf       *config.Config
+	httpServer *http.Server
 
 	graphql struct {
 		resolver *graphqlResolver

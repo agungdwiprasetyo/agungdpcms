@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 func (s *service) ServeHTTP() {
@@ -14,9 +16,24 @@ func (s *service) ServeHTTP() {
 	mux.Handle("/ws", s.websocket.handler)
 
 	httpPort := fmt.Sprintf(":%d", s.conf.Env.HTTPPort)
-	fmt.Println("HTTP Server running on port", httpPort)
-	err := http.ListenAndServe(httpPort, mux)
-	if err != nil {
-		log.Fatal(err)
+
+	s.httpServer = &http.Server{
+		Addr:    httpPort,
+		Handler: mux,
 	}
+
+	fmt.Println("HTTP Server running on port", httpPort)
+	if err := s.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatalf("listen: %s\n", err)
+	}
+}
+
+func (s *service) Shutdown() {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := s.httpServer.Shutdown(ctx); err != nil {
+		log.Fatalf("Failed to Shutdown HTTP Server :%+v", err)
+	}
+	log.Print("Server Exited Properly")
 }

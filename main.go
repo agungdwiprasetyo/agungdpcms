@@ -39,6 +39,7 @@ func main() {
 	signal.Notify(quit, os.Interrupt, os.Kill, syscall.SIGTERM)
 	select {
 	case <-quit:
+		s.Shutdown()
 		conf.Release()
 		os.Exit(0)
 	}
