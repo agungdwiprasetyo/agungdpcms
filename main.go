@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
-	"sync"
+	"syscall"
 
 	"github.com/agungdwiprasetyo/agungdpcms/config"
 	env "github.com/joho/godotenv"
@@ -25,37 +25,21 @@ func init() {
 }
 
 func main() {
-	interrupted := make(chan os.Signal, 1)
-	signal.Notify(interrupted, os.Interrupt)
-
 	conf := config.Init()
 	s := newService(conf)
 
-	var wg sync.WaitGroup
+	// serve HTTP for graphql
+	go s.ServeHTTP()
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		s.ServeHTTP()
-	}()
+	// serve websocket server
+	go s.websocket.server.ListenAndServe()
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		s.websocket.server.ListenAndServe()
-	}()
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		for {
-			select {
-			case <-interrupted:
-				conf.Release()
-				os.Exit(0)
-			}
-		}
-	}()
-
-	wg.Wait()
+	// wait os interupted or PID has been killed
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, os.Kill, syscall.SIGTERM)
+	select {
+	case <-quit:
+		conf.Release()
+		os.Exit(0)
+	}
 }

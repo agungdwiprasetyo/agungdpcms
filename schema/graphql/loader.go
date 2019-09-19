@@ -11,7 +11,7 @@ import (
 // LoadSchema graphql from file
 func LoadSchema() string {
 	var schema strings.Builder
-	here := fmt.Sprintf("%s/schema/", os.Getenv("APP_PATH"))
+	here := fmt.Sprintf("%s/schema/graphql/", os.Getenv("APP_PATH"))
 
 	// load main schema
 	s, err := ioutil.ReadFile(here + "schema.graphql")
