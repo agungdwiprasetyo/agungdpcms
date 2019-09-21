@@ -1,11 +1,13 @@
 ################### Chat Module Area
 type ChatModule {
-    getAllMessage(groupId: Int!, page: Int!, limit: Int!): ChatMessages
+    getAllMessage(groupId: Int!, page: Int!, limit: Int!, keyword: String!): ChatMessages
 }
+
 type ChatGroup {
     id: Int!
     name: String!
 }
+
 type ChatMessage {
     id: Int!
     clientId: String!
@@ -13,6 +15,7 @@ type ChatMessage {
     title: String!
     content: String!
 }
+
 type ChatMessages {
     meta: Meta!
     data: [ChatMessage]!

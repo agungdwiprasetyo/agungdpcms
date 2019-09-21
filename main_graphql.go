@@ -13,6 +13,7 @@ import (
 	"github.com/agungdwiprasetyo/agungdpcms/config"
 	graphqlschema "github.com/agungdwiprasetyo/agungdpcms/schema/graphql"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
+	"github.com/agungdwiprasetyo/agungdpcms/shared/logger"
 	cd "github.com/agungdwiprasetyo/agungdpcms/src/chat/delivery"
 	md "github.com/agungdwiprasetyo/agungdpcms/src/master/delivery"
 	rd "github.com/agungdwiprasetyo/agungdpcms/src/resume/delivery"
@@ -35,8 +36,12 @@ type graphqlHandler struct {
 func newGraphQLHandler(env *config.Environment, resolver *graphqlResolver) *graphqlHandler {
 	gqlSchema := graphqlschema.LoadSchema()
 	return &graphqlHandler{
-		schema: graphql.MustParseSchema(gqlSchema, resolver, graphql.UseStringDescriptions(), graphql.UseFieldResolvers()),
-		env:    env,
+		schema: graphql.MustParseSchema(gqlSchema, resolver,
+			graphql.UseStringDescriptions(),
+			graphql.UseFieldResolvers(),
+			graphql.Logger(&logger.PanicLogger{}),
+			graphql.Tracer(&logger.NoopTracer{})),
+		env: env,
 	}
 }
 
