@@ -19,23 +19,23 @@ type service struct {
 	conf       *config.Config
 	httpServer *http.Server
 
-	graphql struct {
-		resolver *graphqlResolver
-		handler  *graphqlHandler
-	}
-
 	websocket struct {
 		server  *websocket.Server
 		handler *websocket.Handler
 	}
+
+	resumeModule *resume.Module
+	masterModule *master.Module
+	chatModule   *chat.Module
+	userModule   *user.Module
 }
 
 func newService(conf *config.Config) *service {
 	// init middleware
 	// midd := middleware.NewBasicAuth(conf)
-	token := jwtToken.New(conf.PrivateKey, conf.PublicKey, conf.Env.TokenAge)
+	token := jwtToken.New(conf.PrivateKey, conf.PublicKey, config.GlobalEnv.TokenAge)
 	midd := middleware.NewBearer(conf, token)
-	wsServer := websocket.NewServer(&conf.Env)
+	wsServer := websocket.NewServer()
 
 	// load json schema
 	if err := jsonschema.Load(os.Getenv("APP_PATH") + "/schema/jsonschema/"); err != nil {
@@ -51,19 +51,14 @@ func newService(conf *config.Config) *service {
 	// init chat module
 	chatModule := chat.New(conf, midd)
 
-	gqlResolver := &graphqlResolver{
-		Resume: resumeModule.Handler,
-		Chat:   chatModule.Handler,
-		User:   userModule.Handler,
-		Master: masterModule.Handler,
-	}
-
 	srv := new(service)
 	srv.conf = conf
 	srv.websocket.server = wsServer
 	srv.websocket.handler = websocket.NewWebsocketHandler(wsServer, chatModule.Usecase)
-	srv.graphql.resolver = gqlResolver
-	srv.graphql.handler = newGraphQLHandler(&conf.Env, gqlResolver)
 
+	srv.resumeModule = resumeModule
+	srv.masterModule = masterModule
+	srv.chatModule = chatModule
+	srv.userModule = userModule
 	return srv
 }

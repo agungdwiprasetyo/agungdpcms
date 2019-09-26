@@ -7,15 +7,17 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/agungdwiprasetyo/agungdpcms/config"
 )
 
 func (s *service) ServeHTTP() {
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir(fmt.Sprintf("%s/static", os.Getenv("APP_PATH")))))
-	mux.Handle("/graphql", s.graphql.handler)
+	mux.Handle("/graphql", s.graphQLHandler())
 	mux.Handle("/ws", s.websocket.handler)
 
-	httpPort := fmt.Sprintf(":%d", s.conf.Env.HTTPPort)
+	httpPort := fmt.Sprintf(":%d", config.GlobalEnv.HTTPPort)
 
 	s.httpServer = &http.Server{
 		Addr:    httpPort,

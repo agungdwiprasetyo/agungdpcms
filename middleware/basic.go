@@ -17,7 +17,7 @@ type basic struct {
 
 // NewBasicAuth construct new basic auth middleware
 func NewBasicAuth(conf *config.Config) Middleware {
-	return &basic{username: conf.Env.Username, password: conf.Env.Password}
+	return &basic{username: config.GlobalEnv.Username, password: config.GlobalEnv.Password}
 }
 
 func (b *basic) WithAuth(ctx context.Context) context.Context {

@@ -21,35 +21,37 @@ import (
 	"github.com/graph-gophers/graphql-go"
 )
 
-type graphqlResolver struct {
-	Resume *rd.GraphQLHandler
-	Chat   *cd.GraphQLHandler
-	User   *ud.GraphQLHandler
-	Master *md.GraphQLHandler
-}
-
-type graphqlHandler struct {
-	schema *graphql.Schema
-	env    *config.Environment
-}
-
-func newGraphQLHandler(env *config.Environment, resolver *graphqlResolver) *graphqlHandler {
+func (s *service) graphQLHandler() *graphqlHandler {
+	var resolver = struct {
+		Resume *rd.GraphQLHandler
+		Chat   *cd.GraphQLHandler
+		User   *ud.GraphQLHandler
+		Master *md.GraphQLHandler
+	}{
+		s.resumeModule.Handler,
+		s.chatModule.Handler,
+		s.userModule.Handler,
+		s.masterModule.Handler,
+	}
 	gqlSchema := graphqlschema.LoadSchema()
 	return &graphqlHandler{
-		schema: graphql.MustParseSchema(gqlSchema, resolver,
+		schema: graphql.MustParseSchema(gqlSchema, &resolver,
 			graphql.UseStringDescriptions(),
 			graphql.UseFieldResolvers(),
 			graphql.Logger(&logger.PanicLogger{}),
 			graphql.Tracer(&logger.NoopTracer{})),
-		env: env,
 	}
+}
+
+type graphqlHandler struct {
+	schema *graphql.Schema
 }
 
 func (h *graphqlHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// handle cors
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Access-Control-Allow-Origin", h.env.CORSWhitelist)
+	w.Header().Set("Access-Control-Allow-Origin", config.GlobalEnv.CORSWhitelist)
 	if r.Method == http.MethodOptions {
 		return
 	}

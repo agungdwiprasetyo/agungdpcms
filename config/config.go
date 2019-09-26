@@ -18,19 +18,21 @@ type Config struct {
 
 	PrivateKey *rsa.PrivateKey
 	PublicKey  *rsa.PublicKey
-
-	Env Environment
 }
 
 // Environment model
 type Environment struct {
 	HTTPPort      int
+	GRPCPort      int
 	CORSWhitelist string
 	Username      string
 	Password      string
 	TokenAge      time.Duration
 	Websocket     bool
 }
+
+// GlobalEnv global env
+var GlobalEnv Environment
 
 // Init global config
 func Init() *Config {
@@ -42,25 +44,30 @@ func Init() *Config {
 	conf.PrivateKey = key.LoadPrivateKey()
 	conf.PublicKey = key.LoadPublicKey()
 
-	conf.Env.HTTPPort, err = strconv.Atoi(os.Getenv("HTTP_PORT"))
+	GlobalEnv.HTTPPort, err = strconv.Atoi(os.Getenv("HTTP_PORT"))
 	if err != nil {
 		panic(err)
 	}
-	conf.Env.Username = os.Getenv("USERNAME")
-	conf.Env.Password = os.Getenv("PASSWORD")
+	GlobalEnv.GRPCPort, err = strconv.Atoi(os.Getenv("GRPC_PORT"))
+	if err != nil {
+		panic(err)
+	}
+
+	GlobalEnv.Username = os.Getenv("USERNAME")
+	GlobalEnv.Password = os.Getenv("PASSWORD")
 
 	if v, ok := os.LookupEnv("CORS_WHITELIST"); ok {
-		conf.Env.CORSWhitelist = v
+		GlobalEnv.CORSWhitelist = v
 	} else {
-		conf.Env.CORSWhitelist = "*"
+		GlobalEnv.CORSWhitelist = "*"
 	}
 
-	conf.Env.TokenAge, err = time.ParseDuration(os.Getenv("TOKEN_AGE"))
+	GlobalEnv.TokenAge, err = time.ParseDuration(os.Getenv("TOKEN_AGE"))
 	if err != nil {
 		panic(err)
 	}
 
-	conf.Env.Websocket, _ = strconv.ParseBool(os.Getenv("WEBSOCKET"))
+	GlobalEnv.Websocket, _ = strconv.ParseBool(os.Getenv("WEBSOCKET"))
 
 	return conf
 }
