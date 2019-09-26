@@ -31,6 +31,9 @@ func main() {
 	// serve HTTP for graphql
 	go s.ServeHTTP()
 
+	// serve GRPC server
+	go s.ServeGRPC()
+
 	// serve websocket server
 	go s.websocket.server.ListenAndServe()
 

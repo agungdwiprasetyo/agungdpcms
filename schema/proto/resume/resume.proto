@@ -1,0 +1,32 @@
+syntax="proto3";
+package resume;
+
+service ResumeHandler {
+  rpc GetAllResume (Filter) returns (Resume);
+}
+
+message Filter {
+    int32 Page = 1;
+    int32 Limit = 2;
+    string Sort = 3;
+    string SortBy = 4;
+}
+
+message Resume {
+    int32  ID = 1;
+    string Slug = 2;
+    string Name = 3;
+    Profile Profile = 4;
+}
+
+message Profile {
+    int32 ID = 1;
+    int32 ResumeID = 2;
+    string FullName = 3;
+    string Religion = 4;
+	string Hobby = 5;
+	string Github = 6;
+	string Linkedin = 7;
+	string Instagram = 8;
+	string Facebook = 9;
+}

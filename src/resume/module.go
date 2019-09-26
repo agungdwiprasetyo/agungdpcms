@@ -10,7 +10,9 @@ import (
 
 // Module model
 type Module struct {
-	Handler    *delivery.GraphQLHandler
+	Handler     *delivery.GraphQLHandler
+	GRPCHandler *delivery.GRPCHandler
+
 	Usecase    usecase.Resume
 	Repository *repository.Repository
 }
@@ -20,9 +22,12 @@ func New(conf *config.Config, midd middleware.Middleware) *Module {
 	repo := repository.NewRepository(conf.DB)
 	uc := usecase.NewResumeUsecase(repo)
 	handler := delivery.NewGraphQLHandler(uc, midd)
+	grpcHandler := delivery.NewGRPCHandler(uc)
 
 	return &Module{
-		Handler:    handler,
+		Handler:     handler,
+		GRPCHandler: grpcHandler,
+
 		Usecase:    uc,
 		Repository: repo,
 	}
