@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/agungdwiprasetyo/agungdpcms/config"
 	graphqlschema "github.com/agungdwiprasetyo/agungdpcms/schema/graphql"
 	"github.com/agungdwiprasetyo/agungdpcms/shared"
 	"github.com/agungdwiprasetyo/agungdpcms/shared/logger"
@@ -50,8 +49,9 @@ type graphqlHandler struct {
 func (h *graphqlHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// handle cors
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Access-Control-Allow-Origin", config.GlobalEnv.CORSWhitelist)
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE")
 	if r.Method == http.MethodOptions {
 		return
 	}
