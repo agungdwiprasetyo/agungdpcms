@@ -1,7 +1,12 @@
 package domain
 
-// GetAllMessageArgs model
-type GetAllMessageArgs struct {
-	GroupID     int32
-	Page, Limit int32
+import (
+	"github.com/agungdwiprasetyo/agungdpcms/shared/filter"
+)
+
+// Param model
+type Param struct {
+	Keyword string
+	GroupID int32
+	filter.Filter
 }

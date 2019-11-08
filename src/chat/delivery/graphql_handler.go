@@ -26,12 +26,12 @@ func NewGraphQLHandler(uc usecase.Chat, midd middleware.Middleware) *GraphQLHand
 }
 
 // GetAllMessage graphql handler
-func (h *GraphQLHandler) GetAllMessage(ctx context.Context, args *domain.GetAllMessageArgs) (*serializer.MessageListSchema, error) {
+func (h *GraphQLHandler) GetAllMessage(ctx context.Context, args *domain.Param) (*serializer.MessageListSchema, error) {
 	ctx = h.midd.WithAuth(ctx)
 	userData := shared.ParseUserData(ctx)
 	debug.PrintJSON(userData)
 
-	res := h.uc.FindAllMessagesByGroupID(args)
+	res := h.uc.FindAllMessages(args)
 	if res.Error != nil {
 		return nil, res.Error
 	}
