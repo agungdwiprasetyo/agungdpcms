@@ -13,6 +13,7 @@ import (
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/repository"
 	"github.com/agungdwiprasetyo/agungdpcms/src/chat/serializer"
 	"github.com/agungdwiprasetyo/agungdpcms/websocket"
+	"github.com/agungdwiprasetyo/go-utils/debug"
 	ws "github.com/gorilla/websocket"
 )
 
@@ -50,15 +51,18 @@ func (uc *chatImpl) Join(roomID string, client *websocket.Client) error {
 		}()
 
 		for {
-			_, message, err := client.Conn.ReadMessage()
+			tp, message, err := client.Conn.ReadMessage()
+			debug.Println(tp)
 			if err != nil {
 				break
 			}
 			var m domain.Message
 			json.Unmarshal(message, &m)
+			m.ID = int(time.Now().Unix())
 			m.ClientID = client.ID
 			m.Timestamp = &now
-			uc.repo.Chat.SaveMessage(&m)
+
+			go uc.repo.Chat.SaveMessage(&m)
 
 			message, _ = json.Marshal(m)
 			client.Server.Message <- message
@@ -83,6 +87,10 @@ func (uc *chatImpl) Join(roomID string, client *websocket.Client) error {
 				if err != nil {
 					client.Conn.Close()
 				}
+			case dis := <-client.Server.Disconnect:
+				client.Conn.WriteMessage(ws.CloseMessage, []byte(`{"message": "closed"}`))
+				client.Server.RemoveClient(dis)
+				debug.Println(len(dis.Server.Clients))
 			}
 		}
 	}()
@@ -90,7 +98,7 @@ func (uc *chatImpl) Join(roomID string, client *websocket.Client) error {
 	return nil
 }
 
-func (uc *chatImpl) FindAllMessagesByGroupID(args *domain.GetAllMessageArgs) (res shared.Result) {
+func (uc *chatImpl) FindAllMessages(args *domain.Param) (res shared.Result) {
 	filter := filter.Filter{Page: args.Page, Limit: args.Limit}
 	filter.CalculateOffset()
 	mt := &meta.Meta{Page: int(args.Page), Limit: int(args.Limit)}
@@ -105,13 +113,15 @@ func (uc *chatImpl) FindAllMessagesByGroupID(args *domain.GetAllMessageArgs) (re
 	for _, m := range messages {
 		data.Data = append(data.Data, &serializer.MessageSchema{Message: m})
 	}
-	data.M = &meta.MetaSchema{Meta: mt}
 
-	res = uc.repo.Chat.CountByGroupID(int(args.GroupID))
+	res = uc.repo.Chat.Count(&domain.Message{GroupID: int(args.GroupID)})
 	if res.Error != nil {
 		return
 	}
 	mt.TotalRecords = res.Data.(int)
+	mt.CalculatePages()
+
+	data.M = &meta.MetaSchema{Meta: mt}
 
 	res.Data = data
 	return res

@@ -9,5 +9,5 @@ import (
 // Chat abstraction
 type Chat interface {
 	Join(roomID string, client *websocket.Client) error
-	FindAllMessagesByGroupID(args *domain.GetAllMessageArgs) shared.Result
+	FindAllMessages(args *domain.Param) shared.Result
 }

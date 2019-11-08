@@ -11,7 +11,7 @@ type (
 	Chat interface {
 		FindGroupByID(id int) shared.Result
 		FindAllMessage(groupID, offset, limit int) shared.Result
-		CountByGroupID(groupID int) shared.Result
+		Count(where *domain.Message) shared.Result
 		SaveMessage(data *domain.Message) shared.Result
 	}
 )

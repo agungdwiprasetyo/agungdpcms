@@ -41,9 +41,9 @@ func (r *chatGorm) SaveMessage(data *domain.Message) (res shared.Result) {
 	return
 }
 
-func (r *chatGorm) CountByGroupID(groupID int) (res shared.Result) {
+func (r *chatGorm) Count(where *domain.Message) (res shared.Result) {
 	var count int
-	if err := r.db.Model(&domain.Message{GroupID: groupID}).Count(&count).Error; err != nil {
+	if err := r.db.Model(&domain.Message{}).Where(where).Count(&count).Error; err != nil {
 		res.Error = err
 	}
 	res.Data = count
