@@ -1,4 +1,9 @@
-.PHONY : build run test
+.PHONY : build docker deploy run test
+
+GCP_PROJECT_ID = mantab-tenanan-le
+APP_NAME = agungdpcms
+ts = $(shell date +%Y%m%d%H%M%S)
+IMAGE_TAG = $(ts)
 
 PACKAGES = $(shell go list ./... | grep -v -e . | tr '\n' ',')
 PATH_KEY = config/key/
@@ -19,8 +24,14 @@ build:
 run: prepare build
 	./bin
 
-docker: prepare
-	docker build -t agungdpcms:latest .
+docker: prepare build
+	docker build -t $(APP_NAME):latest .
+
+deploy:
+	docker build -t $(APP_NAME):$(IMAGE_TAG) .
+	docker tag $(APP_NAME):$(IMAGE_TAG) gcr.io/$(GCP_PROJECT_ID)/$(APP_NAME):$(IMAGE_TAG)
+	docker push gcr.io/$(GCP_PROJECT_ID)/$(APP_NAME):$(IMAGE_TAG)
+	kubectl set image deployment/$(APP_NAME) $(APP_NAME)-sha256=gcr.io/$(GCP_PROJECT_ID)/$(APP_NAME):$(IMAGE_TAG)
 
 test: build
 	if [ -f coverage.txt ]; then rm coverage.txt; fi;
